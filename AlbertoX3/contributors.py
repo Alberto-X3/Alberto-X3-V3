@@ -24,7 +24,9 @@ class ContributorEnum(NoAliasEnum):
             return None, None
 
         gh_tuple: tuple[str, ...] = tuple(map(str, gh_raw))
-        assert len(gh_tuple) == 2, f"Invalid GitHub ID/Node-ID {gh_tuple!r} for {self.attr}! Expected 'tuple[int, str]'"
+        if len(gh_tuple) != 2:
+            # will be changed to DeveloperArgumentError when I'm reaching the error-files
+            raise AttributeError(f"Invalid GitHub ID/Node-ID {gh_tuple!r} for {self.attr}! Expected 'tuple[int, str]'")
 
         # id processing
         if (gh_id := gh_tuple[0]) not in _FALSE and gh_id.isnumeric():
