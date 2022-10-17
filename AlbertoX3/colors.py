@@ -6,7 +6,7 @@ __all__ = (
 
 
 from yaml import safe_load
-from .contants import __root__
+from .contants import LIB_PATH
 
 
 class NestedInt(int):
@@ -35,8 +35,8 @@ class NestedInt(int):
         return int(self)
 
 
-_color_data_flat_ui = safe_load(__root__.joinpath("colors/flat_ui.yml").read_text("utf-8"))
-_color_data_material = safe_load(__root__.joinpath("colors/material.yml").read_text("utf-8"))
+_color_data_flat_ui = safe_load(LIB_PATH.joinpath("colors/flat_ui.yml").read_text("utf-8"))
+_color_data_material = safe_load(LIB_PATH.joinpath("colors/material.yml").read_text("utf-8"))
 
 
 def _load_flat_ui(name):

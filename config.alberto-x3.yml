@@ -8,12 +8,6 @@ repo:  # https://github.com/{owner}/{name}
 
 discord: "https://discord.gg/23rMcYu"
 
-author:
-  name: AlbertUnruh
-  id: 546320163276849162
-contributors:
-  - AlbertUnruh
-
 language:
   default: EN
   fallback: EN
