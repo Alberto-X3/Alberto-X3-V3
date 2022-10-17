@@ -38,6 +38,7 @@ repos:
           - flake8-deprecated
           - flake8-print
           - flake8-dunder-all
+          - flake8-pyi
         language_version: python3.10
 
   # - repo: https://github.com/kumaraditya303/mirrors-pyright
