@@ -1,0 +1,31 @@
+name: Alberto X3
+prefix: "t!"
+
+repo:  # https://github.com/{owner}/{name}
+  owner: Albero-X3
+  name: Alberto-X3-V3
+  icon: "https://github.com/Alberto-X3.png"
+
+discord: "https://discord.gg/23rMcYu"
+
+author:
+  name: AlbertUnruh
+  id: 546320163276849162
+contributors:
+  - AlbertUnruh
+
+language:
+  default: EN
+  fallback: EN
+  available:
+    - EN
+
+extensions:
+  folder: "./AlbertoX3/extensions/"
+
+tmp:
+  folder: "./tmp/"
+  pattern: "{extension}.{id}.{suffix}.alberto-x3.tmp"
+  remove:
+    auto: true
+    on_startup: true
