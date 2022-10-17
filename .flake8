@@ -33,4 +33,4 @@ extend-ignore =
     T004, # missed colon in TODO
     T006, # write TODO instead of ToDo
 
-max-line-length=80
+max-line-length=120

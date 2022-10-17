@@ -10,7 +10,6 @@ __all__ = (
 )
 
 from asyncio import (
-    AbstractEventLoop,
     Event,
     Lock,
     Semaphore,
@@ -21,41 +20,39 @@ from asyncio import (
 )
 from functools import partial, update_wrapper, wraps
 from threading import Thread as t_Thread
-from typing import ParamSpec, TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from typing import Awaitable, Callable, NoReturn, Literal
+    from typing import Awaitable, NoReturn, ParamSpec, TypeVar
 
-T = TypeVar("T")
-P = ParamSpec("P")
+    T = TypeVar("T")
+    P = ParamSpec("P")
 
-event_loop: AbstractEventLoop = get_event_loop()
+
+event_loop = get_event_loop()
 
 
 class Thread(t_Thread):
-    _return: tuple[Literal[True], T] | tuple[Literal[False], Exception]
-    _func: Callable[P, T]
-    _event: Event
-    _loop: AbstractEventLoop
-
-    def __init__(self, func: Callable[P, T], loop: AbstractEventLoop):
+    def __init__(self, func, loop):
         super().__init__()
 
+        self._return = None, None  # noqa
         self._func = func
         self._event = Event()
         self._loop = loop
 
-    async def wait(self) -> tuple[Literal[True], T] | tuple[Literal[False], Exception]:
+    async def wait(self):
         """
         Returns
         -------
         tuple[Literal[True], T] | tuple[Literal[False], Exception]
-            A tuple containing a boolean and the return from the function if ``True``, otherwise the exception which was raised.
+            A tuple containing a boolean and the return from the function if ``True``,
+            otherwise the exception which was raised.
         """
         await self._event.wait()
         return self._return
 
-    def run(self) -> NoReturn:
+    def run(self):
         try:
             self._return = True, self._func()
         except Exception as e:
@@ -64,29 +61,23 @@ class Thread(t_Thread):
 
 
 class LockDeco:
-    lock: Lock
-    func: Callable[P, T]
-
-    def __init__(self, func: Callable[P, T]):
+    def __init__(self, func):
         self.lock = Lock()
         self.func = func
         update_wrapper(self, func)
 
-    async def __call__(self, *args: P.args, **kwargs: P.kwargs) -> T:
+    async def __call__(self, *args, **kwargs):
         async with self.lock:
             return await self.func(*args, **kwargs)
 
 
 class GatherAnyError(Exception):
-    idx: int
-    exception: Exception
-
-    def __init__(self, idx: int, exception: Exception):
+    def __init__(self, idx, exception):
         self.idx = idx
         self.exception = exception
 
 
-async def gather_any(*coroutines: Awaitable[T]) -> tuple[int, T]:
+async def gather_any(*coroutines):
     """
     Parameters
     ----------
@@ -127,7 +118,7 @@ async def gather_any(*coroutines: Awaitable[T]) -> tuple[int, T]:
         return index, value
 
 
-async def run_in_thread(func: Callable[P, T], *args: P.args, **kwargs: P.kwargs) -> T:
+async def run_in_thread(func, *args, **kwargs):
     """
     Parameters
     ----------
@@ -157,17 +148,32 @@ async def run_in_thread(func: Callable[P, T], *args: P.args, **kwargs: P.kwargs)
         return result
 
 
-async def semaphore_gather(n: int, /, *tasks: Awaitable[T]) -> list[T]:
+async def semaphore_gather(n, /, *tasks):
+    """
+    Runs multiple tasks at once and returns their returns.
+
+    Parameters
+    ----------
+    n: int
+        The maximum amount of tasks to run simultaneously.
+    tasks: Awaitable[T]
+        The tasks to execute.
+
+    Returns
+    -------
+    list[T]
+        The return values from the tasks.
+    """
     semaphore = Semaphore(n)
 
-    async def inner(t):
+    async def inner(t: Awaitable[T]) -> T:
         async with semaphore:
             return await t
 
     return list(await gather(*map(inner, tasks)))
 
 
-def run_as_task(func: Callable[P, T]) -> Callable[P, T]:
+def run_as_task(func):
     """
     Parameters
     ----------
@@ -181,7 +187,7 @@ def run_as_task(func: Callable[P, T]) -> Callable[P, T]:
     """
 
     @wraps(func)
-    async def inner(*args, **kwargs):
+    async def inner(*args: P.args, **kwargs: P.kwargs):
         create_task(func(*args, **kwargs))
 
     return inner

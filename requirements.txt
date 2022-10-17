@@ -1,2 +1,3 @@
 AlbertUnruhUtils.py~=2.2.1
 NAFF[voice,speedup]~=1.11.1
+PyYAML~=6.0
