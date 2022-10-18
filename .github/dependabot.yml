@@ -4,15 +4,26 @@
 # https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
 
 version: 2
+
 updates:
+
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
-      time: "01:23"
+      time: "01:00"
     target-branch: "develop"
     open-pull-requests-limit: 10
-    reviewers:
-      - "AlbertUnruh"
+    assignees:
+      - "Alberto-X3/v3-core-dev"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "01:10"
+    open-pull-requests-limit: 5
+    assignees:
       - "Alberto-X3/v3-core-dev"
