@@ -14,7 +14,8 @@ updates:
       day: "monday"
       time: "01:00"
     target-branch: "develop"
-    pull-request-branch-name.separator: "-"
+    pull-request-branch-name:
+      separator: "-"
     open-pull-requests-limit: 10
     assignees:
       - "Alberto-X3/v3-core-dev"
@@ -25,7 +26,8 @@ updates:
       interval: "weekly"
       day: "monday"
       time: "01:10"
-    pull-request-branch-name.separator: "-"
+    pull-request-branch-name:
+      separator: "-"
     open-pull-requests-limit: 5
     assignees:
       - "Alberto-X3/v3-core-dev"
