@@ -1,4 +1,4 @@
-name: precommit-action
+name: Pre-commit
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   linter_name:
-    name: runner / Pre-commit actions
+    name: Pre-commit
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
