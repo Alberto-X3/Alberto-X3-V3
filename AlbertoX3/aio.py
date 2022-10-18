@@ -52,9 +52,9 @@ class Thread(t_Thread):
         await self._event.wait()
         return self._return
 
-    def run(self):
+    def run(self, *args, **kwargs):
         try:
-            self._return = True, self._func()
+            self._return = True, self._func(*args, **kwargs)
         except Exception as e:
             self._return = False, e
         self._loop.call_soon_threadsafe(self._event.set)
