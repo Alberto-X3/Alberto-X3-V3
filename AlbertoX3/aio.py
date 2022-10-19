@@ -21,6 +21,7 @@ from asyncio import (
 from functools import partial, update_wrapper, wraps
 from threading import Thread as t_Thread
 from typing import TYPE_CHECKING
+from .contants import MISSING
 
 if TYPE_CHECKING:
     from typing import Awaitable, NoReturn, ParamSpec, TypeVar
@@ -33,10 +34,11 @@ event_loop = get_event_loop()
 
 
 class Thread(t_Thread):
+    _return = MISSING, MISSING
+
     def __init__(self, func, loop):
         super().__init__()
 
-        self._return = None, None  # noqa
         self._func = func
         self._event = Event()
         self._loop = loop

@@ -4,7 +4,7 @@ __all__ = ("Contributor",)
 from aenum import NoAliasEnum
 
 
-_FALSE = frozenset({"0", "-1", "none", "nan", "false", "/", "()", "[]", "{}", "set()"})
+_FALSE = frozenset({"0", "-1", "none", "nan", "false", "/", "()", "[]", "{}", "set()", "missing", "notset"})
 
 
 class ContributorEnum(NoAliasEnum):
@@ -12,7 +12,7 @@ class ContributorEnum(NoAliasEnum):
     def discord_id(self):
         if str(dc_id := self.value[0]).lower() in _FALSE:
             return None
-        return dc_id
+        return int(dc_id)
 
     @property
     def discord_mention(self):

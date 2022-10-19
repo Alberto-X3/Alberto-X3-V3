@@ -1,10 +1,12 @@
 __all__ = (
     "LIB_PATH",
+    "MISSING",
     "Config",
     "StyleConfig",
 )
 
 
+from naff import Missing
 from pathlib import Path
 from yaml import safe_load
 from .contributors import Contributor
@@ -13,6 +15,7 @@ from .utils import get_bool
 
 
 LIB_PATH = Path(__file__).parent
+MISSING = Missing()
 
 
 class Config:
@@ -20,14 +23,44 @@ class Config:
     Global configuration for the bot.
     """
 
+    __slots__ = ()
     _instance = []
+
+    # bot
+    NAME = MISSING
+    VERSION = MISSING
+    PREFIX = MISSING
+    # repo
+    REPO_OWNER = MISSING
+    REPO_NAME = MISSING
+    REPO_LINK = MISSING
+    REPO_ICON = MISSING
+    # help
+    SUPPORT_DISCORD = MISSING
+    # developers
+    AUTHOR = MISSING
+    CONTRIBUTORS = MISSING
+    # language
+    LANGUAGE_DEFAULT = MISSING
+    LANGUAGE_FALLBACK = MISSING
+    LANGUAGE_AVAILABLE = MISSING
+    # extensions
+    EXTENSIONS_FOLDER_RAW = MISSING
+    EXTENSIONS_FOLDER = MISSING
+    EXTENSIONS = MISSING
+    # tmp
+    TMP_FOLDER_RAW = MISSING
+    TMP_FOLDER = MISSING
+    TMP_PATTERN = MISSING
+    TMP_REMOVE_AUTO = MISSING
+    TMP_REMOVE_ON_STARTUP = MISSING
 
     def __new__(cls, path):
         config = safe_load(path.read_text("utf-8"))
 
         # bot
         cls.NAME = config["name"]
-        cls.VERSION = ...
+        cls.VERSION = MISSING
         cls.PREFIX = config["prefix"]
 
         # repo
@@ -54,7 +87,7 @@ class Config:
         if not folder.is_absolute():
             folder = LIB_PATH.joinpath(folder)
         cls.EXTENSIONS_FOLDER = folder
-        cls.EXTENSIONS = ...
+        cls.EXTENSIONS = MISSING
 
         # tmp
         cls.TMP_FOLDER_RAW = (folder := config["tmp"]["folder"])
@@ -103,23 +136,23 @@ class StyleConfig:
 
     def __new__(
         cls,
-        t_attribute=None,
-        t_value=None,
-        vl=None,
-        vm=None,
-        vr=None,
-        ht=None,
-        hm=None,
-        hb=None,
-        tl=None,
-        tm=None,
-        tr=None,
-        ml=None,
-        mm=None,
-        mr=None,
-        bl=None,
-        bm=None,
-        br=None,
+        t_attribute=MISSING,
+        t_value=MISSING,
+        vl=MISSING,
+        vm=MISSING,
+        vr=MISSING,
+        ht=MISSING,
+        hm=MISSING,
+        hb=MISSING,
+        tl=MISSING,
+        tm=MISSING,
+        tr=MISSING,
+        ml=MISSING,
+        mm=MISSING,
+        mr=MISSING,
+        bl=MISSING,
+        bm=MISSING,
+        br=MISSING,
     ):
         settings = locals()
         settings.pop("cls")
@@ -133,7 +166,7 @@ class StyleConfig:
             if setting not in dir(self):
                 # will be changed to BadConfigArgument when I'm reaching the error-files
                 raise ValueError  # invalid setting
-            if character is None:  # default from __new__
+            if character is MISSING:  # default from __new__
                 continue
             if not isinstance(character, str):
                 # will be changed to BadConfigArgument when I'm reaching the error-files

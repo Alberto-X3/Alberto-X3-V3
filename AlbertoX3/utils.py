@@ -9,10 +9,12 @@ __all__ = (
 
 
 import re
-from naff import User, Member
+from naff import User, Member, MISSING
+
+# Note: using naff.MISSING to avoid circular imports from .constants
 
 
-def get_value_table(obj, /, *, style=None):
+def get_value_table(obj, /, *, style=MISSING):
     """
     Creates a nice table with attributes and their values.
 
@@ -54,7 +56,7 @@ def get_value_table(obj, /, *, style=None):
     # circular imports...
     from .contants import StyleConfig
 
-    if style is None:
+    if style is MISSING:
         style = StyleConfig()
     if isinstance(style, dict):
         style = StyleConfig.from_dict(style)
@@ -123,12 +125,12 @@ def get_bool(obj, /):
     raise ValueError
 
 
-def get_subclasses_in_extensions(base, *, extensions=None):  # noqa
+def get_subclasses_in_extensions(base, *, extensions=MISSING):  # noqa
     # isn't implemented yet -> is static
     return []
 
 
-def get_language(*, guild=None, user=None):
+def get_language(*, guild=MISSING, user=MISSING):
     """
     Gets a set language by a guild or a user.
 
@@ -152,11 +154,11 @@ def get_language(*, guild=None, user=None):
         Returns the set language if one is set, otherwise None.
     """
     # both are set
-    if guild is not None and user is not None:
+    if guild is not MISSING and user is not MISSING:
         # will be changed to DeveloperArgumentError when I'm reaching the error-files
         raise ValueError  # can't set both
     # neither are set
-    if guild is None and user is None:
+    if guild is MISSING and user is MISSING:
         # will be changed to DeveloperArgumentError when I'm reaching the error-files
         raise ValueError  # must set one
 
