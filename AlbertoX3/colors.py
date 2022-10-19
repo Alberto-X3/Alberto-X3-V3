@@ -110,6 +110,11 @@ class MaterialColors:
     assertion = orange[900]
     notimplemented = lightblue[900]
 
+    blurple = 0x5865F2
+    blurple_legacy = 0x7289DA
+
+    albertunruh = 0x3C62F9
+
 
 class AllColors(FlatUIColors, MaterialColors):
     """
@@ -120,6 +125,7 @@ class AllColors(FlatUIColors, MaterialColors):
     There is a name-conflict with ``orange``. The value from ``MaterialColors`` will be set since it's more detailed.
     """
 
-    __slots__ = FlatUIColors.__slots__ + MaterialColors.__slots__
+    # in case I want to change something about the empty __slots__
+    __slots__ = FlatUIColors.__slots__ + MaterialColors.__slots__  # value: ()
 
     orange = MaterialColors.orange

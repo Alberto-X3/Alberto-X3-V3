@@ -64,5 +64,10 @@ class MaterialColors:
     assertion: int
     notimplemented: int
 
+    blurple: int
+    blurple_legacy: int
+
+    albertunruh: int
+
 class AllColors(FlatUIColors, MaterialColors):
     orange: NestedInt
