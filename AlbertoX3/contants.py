@@ -11,7 +11,7 @@ from pathlib import Path
 from yaml import safe_load
 from .contributors import Contributor
 from .misc import FormatStr
-from .utils import get_bool
+from .utils import get_bool, get_lib_version
 
 
 LIB_PATH = Path(__file__).parent
@@ -60,7 +60,7 @@ class Config:
 
         # bot
         cls.NAME = config["name"]
-        cls.VERSION = MISSING
+        cls.VERSION = get_lib_version()
         cls.PREFIX = config["prefix"]
 
         # repo

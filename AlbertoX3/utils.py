@@ -1,6 +1,7 @@
 __all__ = (
     "get_value_table",
     "get_bool",
+    "get_lib_version",
     "get_subclasses_in_extensions",
     "get_language",
     "get_member",
@@ -124,6 +125,48 @@ def get_bool(obj, /):
                     return False
     # will be changed to UnrecognisedBooleanError when I'm reaching the error-files
     raise ValueError
+
+
+_VERSION_REGEX = re.compile(r"^__version__\s*=\s*[\'\"]([^\'\"]*)[\'\"]", re.MULTILINE)
+
+
+def get_lib_version():
+    # circular imports...
+    from .contants import LIB_PATH
+
+    file = LIB_PATH.joinpath("__init__.py").read_text("utf-8")
+    if (result := _VERSION_REGEX.search(file)) is None:
+        version = "0.0.0"
+    else:
+        version = result.group(1)
+
+    try:
+        import subprocess  # noqa S404
+
+        # commit count
+        p = subprocess.Popen(  # noqa S603, S607
+            ["git", "rev-list", "--count", "HEAD"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        out, err = p.communicate()  # type: bytes, bytes
+        if out:
+            version += f"+{out.decode('utf-8').strip()}"
+
+        # commit sha
+        p = subprocess.Popen(  # noqa S603, S607
+            ["git", "rev-parse", "--short", "HEAD"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        out, err = p.communicate()  # type: bytes, bytes
+        if out:
+            version += f"+g{out.decode('utf-8').strip()}"
+
+    except Exception as e:  # noqa  # ToDo: logging
+        ...
+
+    return version
 
 
 def get_subclasses_in_extensions(base, *, extensions=MISSING):  # noqa
