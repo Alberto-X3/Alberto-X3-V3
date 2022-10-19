@@ -2,6 +2,7 @@ __all__ = ("Contributor",)
 
 
 from aenum import NoAliasEnum
+from .errors import DeveloperArgumentError
 
 
 _FALSE = frozenset({"0", "-1", "none", "nan", "false", "/", "()", "[]", "{}", "set()", "missing", "notset"})
@@ -25,8 +26,9 @@ class ContributorEnum(NoAliasEnum):
 
         gh_tuple: tuple[str, ...] = tuple(map(str, gh_raw))
         if len(gh_tuple) != 2:
-            # will be changed to DeveloperArgumentError when I'm reaching the error-files
-            raise AttributeError(f"Invalid GitHub ID/Node-ID {gh_tuple!r} for {self.attr}! Expected 'tuple[int, str]'")
+            raise DeveloperArgumentError(
+                f"Invalid GitHub ID/Node-ID {gh_tuple!r} for {self.attr}! Expected 'tuple[int, str]'"
+            )
 
         # id processing
         if (gh_id := gh_tuple[0]) not in _FALSE and gh_id.isnumeric():

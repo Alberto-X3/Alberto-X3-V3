@@ -2,7 +2,6 @@ __all__ = (
     "event_loop",
     "Thread",
     "LockDeco",
-    "GatherAnyError",
     "gather_any",
     "run_in_thread",
     "semaphore_gather",
@@ -22,6 +21,7 @@ from functools import partial, update_wrapper, wraps
 from threading import Thread as t_Thread
 from typing import TYPE_CHECKING
 from .contants import MISSING
+from .errors import GatherAnyError
 
 if TYPE_CHECKING:
     from typing import Awaitable, NoReturn, ParamSpec, TypeVar
@@ -71,12 +71,6 @@ class LockDeco:
     async def __call__(self, *args, **kwargs):
         async with self.lock:
             return await self.func(*args, **kwargs)
-
-
-class GatherAnyError(Exception):
-    def __init__(self, idx, exception):
-        self.idx = idx
-        self.exception = exception
 
 
 async def gather_any(*coroutines):

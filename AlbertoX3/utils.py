@@ -10,6 +10,7 @@ __all__ = (
 
 import re
 from naff import User, Member, MISSING
+from .errors import DeveloperArgumentError
 
 # Note: using naff.MISSING to avoid circular imports from .constants
 
@@ -152,15 +153,18 @@ def get_language(*, guild=MISSING, user=MISSING):
     -------
     str, optional
         Returns the set language if one is set, otherwise None.
+
+    Raises
+    ------
+    DeveloperArgumentError
+        If either both (``guild`` and ``user``) or none of them are set.
     """
     # both are set
     if guild is not MISSING and user is not MISSING:
-        # will be changed to DeveloperArgumentError when I'm reaching the error-files
-        raise ValueError  # can't set both
+        raise DeveloperArgumentError("Can't set both ('guild' and 'user')!")
     # neither are set
     if guild is MISSING and user is MISSING:
-        # will be changed to DeveloperArgumentError when I'm reaching the error-files
-        raise ValueError  # must set one
+        raise DeveloperArgumentError("Either 'guild' or 'user' have to be set!")
 
     # ToDo: connect to database
     # Note (for future me): you should call an async function in here for the database ;)
