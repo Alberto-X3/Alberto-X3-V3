@@ -14,7 +14,7 @@ from .misc import FormatStr
 from .utils import get_bool, get_lib_version
 
 
-LIB_PATH = Path(__file__).parent
+LIB_PATH = Path().resolve()
 MISSING = Missing()
 
 
