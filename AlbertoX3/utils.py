@@ -120,7 +120,7 @@ def get_bool(obj, /):
                 case "false" | "f" | "no" | "n" | "-1" | "0":
                     return False
     # will be changed to UnrecognisedBooleanError when I'm reaching the error-files
-    raise ValueError()
+    raise ValueError
 
 
 def get_subclasses_in_extensions(base, *, extensions=None):  # noqa
@@ -154,11 +154,11 @@ def get_language(*, guild=None, user=None):
     # both are set
     if guild is not None and user is not None:
         # will be changed to DeveloperArgumentError when I'm reaching the error-files
-        raise ValueError()  # can't set both
+        raise ValueError  # can't set both
     # neither are set
     if guild is None and user is None:
         # will be changed to DeveloperArgumentError when I'm reaching the error-files
-        raise ValueError()  # must set one
+        raise ValueError  # must set one
 
     # ToDo: connect to database
     # Note (for future me): you should call an async function in here for the database ;)
@@ -208,22 +208,22 @@ async def get_member(ctx, raw):
             if (result := _NAME_REGEX.match(raw)) is not None:
                 name, discriminator = result.groups()
                 # cold also be done via ctx.guild.members, but get_user() would need this way anyway
-                for (g_id, u_id), member in ctx.bot.cache.member_cache.items():  # type: (int, int), Member
-                    if g_id != ctx.guild_id:
+                for (_g_id, _u_id), member in ctx.bot.cache.member_cache.items():  # type: (int, int), Member
+                    if _g_id != ctx.guild_id:
                         continue
                     if member.username == name and member.discriminator == discriminator:
                         return member
 
             # name?
-            for (g_id, u_id), member in ctx.bot.cache.member_cache.items():  # type: (int, int), Member
-                if g_id != ctx.guild_id:
+            for (_g_id, _u_id), member in ctx.bot.cache.member_cache.items():  # type: (int, int), Member
+                if _g_id != ctx.guild_id:
                     continue
                 if member.username == raw:
                     return member
 
             # nick?
-            for (g_id, u_id), member in ctx.bot.cache.member_cache.items():  # type: (int, int), Member
-                if g_id != ctx.guild_id:
+            for (_g_id, _u_id), member in ctx.bot.cache.member_cache.items():  # type: (int, int), Member
+                if _g_id != ctx.guild_id:
                     continue
                 if member.nickname == raw:
                     return member

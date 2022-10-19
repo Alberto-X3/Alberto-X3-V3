@@ -132,12 +132,12 @@ class StyleConfig:
         for setting, character in d.items():
             if setting not in dir(self):
                 # will be changed to BadConfigArgument when I'm reaching the error-files
-                raise ValueError()  # invalid setting
+                raise ValueError  # invalid setting
             if character is None:  # default from __new__
                 continue
             if not isinstance(character, str):
                 # will be changed to BadConfigArgument when I'm reaching the error-files
-                raise ValueError()  # invalid character length
+                raise ValueError  # invalid character length
 
             setattr(self, setting, character)
 
