@@ -6,7 +6,11 @@ __all__ = (
 
 
 from yaml import safe_load
+from typing import TYPE_CHECKING
 from .constants import LIB_PATH
+
+if TYPE_CHECKING:
+    from typing import Iterator, ItemsView, Any
 
 
 class NestedInt(int):
@@ -14,36 +18,40 @@ class NestedInt(int):
     Integer with a read-only dictionary.
     """
 
-    def __new__(cls, x, values):
+    _values: dict[str | int, int]
+
+    def __new__(cls, x: int, values: dict[str | int, int]):
         self = super().__new__(cls, x)
         self._values = values
         return self
 
-    def __getitem__(self, item):
+    def __getitem__(self, item: str | int) -> int:
         return self._values[item]
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[int]:
         return self._values.__iter__()
 
-    def items(self):
+    def items(self) -> ItemsView:
         return self._values.items()
 
-    def __copy__(self):
+    def __copy__(self) -> int:
         return int(self)
 
-    def __deepcopy__(self, *_):
+    def __deepcopy__(self, *_: Any) -> int:
         return int(self)
 
 
+_color_data_flat_ui: dict[str, int]
 _color_data_flat_ui = safe_load(LIB_PATH.joinpath("colors/flat_ui.yml").read_text("utf-8"))
+_color_data_material: dict[str, dict[str | int, int]]
 _color_data_material = safe_load(LIB_PATH.joinpath("colors/material.yml").read_text("utf-8"))
 
 
-def _load_flat_ui(name):
+def _load_flat_ui(name: str) -> int:
     return _color_data_flat_ui[name]
 
 
-def _load_material(name):
+def _load_material(name: str) -> NestedInt:
     data = _color_data_material[name]
     return NestedInt(data[500], data)
 
@@ -55,26 +63,26 @@ class FlatUIColors:
 
     __slots__ = ()
 
-    turquoise = _load_flat_ui("turquoise")
-    greensea = _load_flat_ui("greensea")
-    emerland = _load_flat_ui("emerland")
-    nephritis = _load_flat_ui("nephritis")
-    peterriver = _load_flat_ui("peterriver")
-    belizehole = _load_flat_ui("belizehole")
-    amethyst = _load_flat_ui("amethyst")
-    wisteria = _load_flat_ui("wisteria")
-    wetasphalt = _load_flat_ui("wetasphalt")
-    midnightblue = _load_flat_ui("midnightblue")
-    sunflower = _load_flat_ui("sunflower")
-    orange = _load_flat_ui("orange")
-    carrot = _load_flat_ui("carrot")
-    pumpkin = _load_flat_ui("pumpkin")
-    alizarin = _load_flat_ui("alizarin")
-    pomegranate = _load_flat_ui("pomegranate")
-    clouds = _load_flat_ui("clouds")
-    silver = _load_flat_ui("silver")
-    concrete = _load_flat_ui("concrete")
-    asbestos = _load_flat_ui("asbestos")
+    turquoise: int = _load_flat_ui("turquoise")
+    greensea: int = _load_flat_ui("greensea")
+    emerland: int = _load_flat_ui("emerland")
+    nephritis: int = _load_flat_ui("nephritis")
+    peterriver: int = _load_flat_ui("peterriver")
+    belizehole: int = _load_flat_ui("belizehole")
+    amethyst: int = _load_flat_ui("amethyst")
+    wisteria: int = _load_flat_ui("wisteria")
+    wetasphalt: int = _load_flat_ui("wetasphalt")
+    midnightblue: int = _load_flat_ui("midnightblue")
+    sunflower: int = _load_flat_ui("sunflower")
+    orange: int = _load_flat_ui("orange")
+    carrot: int = _load_flat_ui("carrot")
+    pumpkin: int = _load_flat_ui("pumpkin")
+    alizarin: int = _load_flat_ui("alizarin")
+    pomegranate: int = _load_flat_ui("pomegranate")
+    clouds: int = _load_flat_ui("clouds")
+    silver: int = _load_flat_ui("silver")
+    concrete: int = _load_flat_ui("concrete")
+    asbestos: int = _load_flat_ui("asbestos")
 
 
 class MaterialColors:
@@ -84,36 +92,25 @@ class MaterialColors:
 
     __slots__ = ()
 
-    red = _load_material("red")
-    pink = _load_material("pink")
-    purple = _load_material("purple")
-    deeppurple = _load_material("deeppurple")
-    indigo = _load_material("indigo")
-    blue = _load_material("blue")
-    lightblue = _load_material("lightblue")
-    cyan = _load_material("cyan")
-    teal = _load_material("teal")
-    green = _load_material("green")
-    lightgreen = _load_material("lightgreen")
-    lime = _load_material("lime")
-    yellow = _load_material("yellow")
-    amber = _load_material("amber")
-    orange = _load_material("orange")
-    deeporange = _load_material("deeporange")
-    brown = _load_material("brown")
-    grey = _load_material("grey")
-    bluegrey = _load_material("bluegrey")
-
-    default = teal[600]
-    error = red["a700"]
-    warning = yellow["a200"]
-    assertion = orange[900]
-    notimplemented = lightblue[900]
-
-    blurple = 0x5865F2
-    blurple_legacy = 0x7289DA
-
-    albertunruh = 0x3C62F9
+    red: NestedInt = _load_material("red")
+    pink: NestedInt = _load_material("pink")
+    purple: NestedInt = _load_material("purple")
+    deeppurple: NestedInt = _load_material("deeppurple")
+    indigo: NestedInt = _load_material("indigo")
+    blue: NestedInt = _load_material("blue")
+    lightblue: NestedInt = _load_material("lightblue")
+    cyan: NestedInt = _load_material("cyan")
+    teal: NestedInt = _load_material("teal")
+    green: NestedInt = _load_material("green")
+    lightgreen: NestedInt = _load_material("lightgreen")
+    lime: NestedInt = _load_material("lime")
+    yellow: NestedInt = _load_material("yellow")
+    amber: NestedInt = _load_material("amber")
+    orange: NestedInt = _load_material("orange")
+    deeporange: NestedInt = _load_material("deeporange")
+    brown: NestedInt = _load_material("brown")
+    grey: NestedInt = _load_material("grey")
+    bluegrey: NestedInt = _load_material("bluegrey")
 
 
 class AllColors(FlatUIColors, MaterialColors):
@@ -128,4 +125,15 @@ class AllColors(FlatUIColors, MaterialColors):
     # in case I want to change something about the empty __slots__
     __slots__ = FlatUIColors.__slots__ + MaterialColors.__slots__  # value: ()
 
-    orange = MaterialColors.orange
+    orange: NestedInt = MaterialColors.orange
+
+    default: int = MaterialColors.teal[600]
+    error: int = MaterialColors.red["a700"]
+    warning: int = MaterialColors.yellow["a200"]
+    assertion: int = MaterialColors.orange[900]
+    notimplemented: int = MaterialColors.lightblue[900]
+
+    blurple: int = 0x5865F2
+    blurple_legacy: int = 0x7289DA
+
+    albertunruh: int = 0x3C62F9
