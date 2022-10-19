@@ -9,5 +9,6 @@ from .aio import *
 from .colors import *
 from .contants import *
 from .contributors import *
+from .enum import *
 from .misc import *
 from .utils import *
