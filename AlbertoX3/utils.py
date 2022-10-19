@@ -56,7 +56,7 @@ def get_value_table(obj, /, *, style=MISSING):
     ... # ╚═══════════╧══════════════╝
     """
     # circular imports...
-    from .contants import StyleConfig
+    from .constants import StyleConfig
 
     if style is MISSING:
         style = StyleConfig()
@@ -132,7 +132,7 @@ _VERSION_REGEX = re.compile(r"^__version__\s*=\s*[\'\"]([^\'\"]*)[\'\"]", re.MUL
 
 def get_lib_version():
     # circular imports...
-    from .contants import LIB_PATH
+    from .constants import LIB_PATH
 
     file = LIB_PATH.joinpath("__init__.py").read_text("utf-8")
     if (result := _VERSION_REGEX.search(file)) is None:

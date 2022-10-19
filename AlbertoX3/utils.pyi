@@ -1,7 +1,7 @@
 import re
 from naff import Context, User, Member, Snowflake_Type, Guild, Absent
 from typing import TypeVar, Type, Optional
-from .contants import StyleConfig
+from .constants import StyleConfig
 from .misc import PrimitiveExtension
 
 T = TypeVar("T")

@@ -20,7 +20,7 @@ from asyncio import (
 from functools import partial, update_wrapper, wraps
 from threading import Thread as t_Thread
 from typing import TYPE_CHECKING
-from .contants import MISSING
+from .constants import MISSING
 from .errors import GatherAnyError
 
 if TYPE_CHECKING:

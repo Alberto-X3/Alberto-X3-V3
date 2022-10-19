@@ -6,7 +6,7 @@ __all__ = (
 
 
 from yaml import safe_load
-from .contants import LIB_PATH
+from .constants import LIB_PATH
 
 
 class NestedInt(int):
