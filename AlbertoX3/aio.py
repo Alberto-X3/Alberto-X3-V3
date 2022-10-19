@@ -20,12 +20,10 @@ from asyncio import (
 )
 from functools import partial, update_wrapper, wraps
 from threading import Thread as t_Thread
-from typing import TYPE_CHECKING, TypeVar, ParamSpec, Literal, Callable, Awaitable
+from typing import TypeVar, ParamSpec, Literal, Callable, Awaitable, NoReturn
 from .constants import MISSING
 from .errors import GatherAnyError
 
-if TYPE_CHECKING:
-    from typing import NoReturn
 
 T = TypeVar("T")
 P = ParamSpec("P")

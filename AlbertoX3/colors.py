@@ -6,11 +6,8 @@ __all__ = (
 
 
 from yaml import safe_load
-from typing import TYPE_CHECKING
+from typing import Iterator, ItemsView, Any
 from .constants import LIB_PATH
-
-if TYPE_CHECKING:
-    from typing import Iterator, ItemsView, Any
 
 
 class NestedInt(int):
