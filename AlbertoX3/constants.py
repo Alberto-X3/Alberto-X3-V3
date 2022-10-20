@@ -11,7 +11,6 @@ from pathlib import Path
 from yaml import safe_load
 from .contributors import Contributor
 from .misc import FormatStr, PrimitiveExtension
-from .utils import get_bool, get_lib_version
 
 
 LIB_PATH: Path = Path().resolve()
@@ -56,6 +55,9 @@ class Config:
     TMP_REMOVE_ON_STARTUP: Absent[bool] = MISSING
 
     def __new__(cls, path: Path):
+        # due to circular imports
+        from .utils import get_bool, get_lib_version
+
         config = safe_load(path.read_text("utf-8"))
 
         # bot
