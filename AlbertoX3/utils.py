@@ -10,13 +10,17 @@ __all__ = (
 
 
 import re
-from naff import User, Member, MISSING
+from naff import Context, User, Member, Snowflake_Type, Guild, Absent
+from typing import TypeVar, Optional
+from .constants import MISSING, LIB_PATH, StyleConfig
 from .errors import DeveloperArgumentError
+from .misc import PrimitiveExtension
 
-# Note: using naff.MISSING to avoid circular imports from .constants
+
+T = TypeVar("T")
 
 
-def get_value_table(obj, /, *, style=MISSING):
+def get_value_table(obj: object, /, *, style: Absent[dict[str, str] | StyleConfig] = MISSING) -> str:
     """
     Creates a nice table with attributes and their values.
 
@@ -63,11 +67,11 @@ def get_value_table(obj, /, *, style=MISSING):
     if isinstance(style, dict):
         style = StyleConfig.from_dict(style)
 
-    arguments = [a for a in dir(obj) if not a.startswith("_")]
-    values = [f"{getattr(obj, a)!r}" for a in arguments]
+    arguments: list[str] = [a for a in dir(obj) if not a.startswith("_")]
+    values: list[str] = [f"{getattr(obj, a)!r}" for a in arguments]
 
-    len_a = len(max(arguments + [style.t_attribute], key=len))
-    len_v = len(max(values + [style.t_value], key=len))
+    len_a: int = len(max(arguments + [style.t_attribute], key=len))
+    len_v: int = len(max(values + [style.t_value], key=len))
 
     lines: list[str] = [
         f"{style.tl}{(len_a + 2) * style.ht}{style.tm}{(len_v + 2) * style.ht}{style.tr}",
@@ -87,7 +91,7 @@ def get_value_table(obj, /, *, style=MISSING):
     return "\n".join(lines)
 
 
-def get_bool(obj, /):
+def get_bool(obj: object, /) -> bool:
     """
     Currently matches:
         - True -> boolean, 1, lowered("true", "t", "yes", "y"), "1"
@@ -110,7 +114,7 @@ def get_bool(obj, /):
     """
     match obj:
         case bool():
-            return obj
+            return obj  # type: ignore
         case int():
             match obj:
                 case 1:
@@ -127,14 +131,12 @@ def get_bool(obj, /):
     raise ValueError
 
 
-_VERSION_REGEX = re.compile(r"^__version__\s*=\s*[\'\"]([^\'\"]*)[\'\"]", re.MULTILINE)
+_VERSION_REGEX: re.Pattern[str] = re.compile(r"^__version__\s*=\s*[\'\"]([^\'\"]*)[\'\"]", re.MULTILINE)
 
 
-def get_lib_version():
-    # circular imports...
-    from .constants import LIB_PATH
-
+def get_lib_version() -> str:
     file = LIB_PATH.joinpath("__init__.py").read_text("utf-8")
+    version: str
     if (result := _VERSION_REGEX.search(file)) is None:
         version = "0.0.0"
     else:
@@ -143,13 +145,16 @@ def get_lib_version():
     try:
         import subprocess  # noqa S404
 
+        out: bytes
+        err: bytes
+
         # commit count
         p = subprocess.Popen(  # noqa S603, S607
             ["git", "rev-list", "--count", "HEAD"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
-        out, err = p.communicate()  # type: bytes, bytes
+        out, err = p.communicate()
         if out:
             version += f"+{out.decode('utf-8').strip()}"
 
@@ -159,22 +164,26 @@ def get_lib_version():
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
-        out, err = p.communicate()  # type: bytes, bytes
+        out, err = p.communicate()
         if out:
             version += f"+g{out.decode('utf-8').strip()}"
 
-    except Exception as e:  # noqa  # ToDo: logging
+    except Exception as e:  # noqa: F841  # ToDo: logging
         ...
 
     return version
 
 
-def get_subclasses_in_extensions(base, *, extensions=MISSING):  # noqa
+def get_subclasses_in_extensions(
+    base: type[T], *, extensions: Absent[list[PrimitiveExtension]] = MISSING  # noqa: F841
+) -> list[type[T]]:
     # isn't implemented yet -> is static
     return []
 
 
-def get_language(*, guild=MISSING, user=MISSING):
+def get_language(
+    *, guild: Absent[Guild | Snowflake_Type] = MISSING, user: Absent[User | Member | Snowflake_Type] = MISSING
+) -> Optional[str]:
     """
     Gets a set language by a guild or a user.
 
@@ -214,19 +223,19 @@ def get_language(*, guild=MISSING, user=MISSING):
     return None
 
 
-_ID_REGEX = re.compile(r"^(\d{7,20})$")
-_MENTION_REGEX = re.compile(r"^<@!?(\d{7,20})>$")
-_NAME_REGEX = re.compile(r"^(.{2,32})#(\d{4})$")
+_ID_REGEX: re.Pattern[str] = re.compile(r"^(\d{7,20})$")
+_MENTION_REGEX: re.Pattern[str] = re.compile(r"^<@!?(\d{7,20})>$")
+_NAME_REGEX: re.Pattern[str] = re.compile(r"^(.{2,32})#(\d{4})$")
 
 
-async def get_member(ctx, raw):
+async def get_member(ctx: Context, raw: User | Member | Snowflake_Type) -> Optional[Member]:
     """
     Get a member from the context's guild.
 
     Parameters
     ----------
     ctx: Context
-    raw: Member, User, SnowflakeType
+    raw: Member, User, Snowflake_Type
         The member to find.
 
     Returns
@@ -292,12 +301,12 @@ async def get_member(ctx, raw):
             return None
 
 
-async def get_user(ctx, raw):
+async def get_user(ctx: Context, raw: User | Member | Snowflake_Type) -> Optional[User]:
     """
     Parameters
     ----------
     ctx: Context
-    raw: User, Member, SnowflakeType
+    raw: User, Member, Snowflake_Type
         The user to search for.
 
     Returns
