@@ -2,25 +2,28 @@ __all__ = ("Contributor",)
 
 
 from aenum import NoAliasEnum
+from typing import Optional
 from .errors import DeveloperArgumentError
 
 
-_FALSE = frozenset({"0", "-1", "none", "nan", "false", "/", "()", "[]", "{}", "set()", "missing", "notset"})
+_FALSE: frozenset[str] = frozenset(
+    {"0", "-1", "none", "nan", "false", "/", "()", "[]", "{}", "set()", "missing", "notset"}
+)
 
 
 class ContributorEnum(NoAliasEnum):
     @property
-    def discord_id(self):
+    def discord_id(self) -> Optional[int]:
         if str(dc_id := self.value[0]).lower() in _FALSE:
             return None
         return int(dc_id)
 
     @property
-    def discord_mention(self):
+    def discord_mention(self) -> Optional[str]:
         return f"<@{self.discord_id}>" if self.discord_id else None
 
     @property
-    def github(self):
+    def github(self) -> tuple[Optional[int], Optional[str]]:
         if str(gh_raw := self.value[1]).lower() in _FALSE:
             return None, None
 
@@ -43,11 +46,11 @@ class ContributorEnum(NoAliasEnum):
         return gh_id, gh_node
 
     @property
-    def github_id(self):
+    def github_id(self) -> Optional[int]:
         return self.github[0]
 
     @property
-    def github_node_id(self):
+    def github_node_id(self) -> Optional[str]:
         return self.github[1]
 
 
