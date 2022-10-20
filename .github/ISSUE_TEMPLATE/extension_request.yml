@@ -40,7 +40,7 @@ body:
           required: true
         - label: I have searched the closed extension requests for ``wontadd``'s.
           required: true
-- type: textarea
+  - type: textarea
     attributes:
       label: Additional Information
       description: >
