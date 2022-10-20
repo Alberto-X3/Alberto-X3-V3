@@ -22,7 +22,10 @@ class DeveloperArgumentError(DeveloperError):
 
 
 class GatherAnyError(AlbertoX3Error):
-    def __init__(self, idx, exception):
+    idx: int
+    exception: Exception
+
+    def __init__(self, idx: int, exception: Exception):
         self.idx = idx
         self.exception = exception
 
