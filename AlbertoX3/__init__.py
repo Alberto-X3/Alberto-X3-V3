@@ -10,5 +10,7 @@ from .colors import *
 from .constants import *
 from .contributors import *
 from .enum import *
+from .environment import *
+from .errors import *
 from .misc import *
 from .utils import *
