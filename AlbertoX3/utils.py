@@ -13,7 +13,7 @@ import re
 from naff import Context, User, Member, Snowflake_Type, Guild, Absent
 from typing import TypeVar, Optional
 from .constants import MISSING, LIB_PATH, StyleConfig
-from .errors import DeveloperArgumentError
+from .errors import DeveloperArgumentError, UnrecognisedBooleanError
 from .misc import PrimitiveExtension
 
 
@@ -128,7 +128,7 @@ def get_bool(obj: object, /) -> bool:
                 case "false" | "f" | "no" | "n" | "-1" | "0":
                     return False
     # will be changed to UnrecognisedBooleanError when I'm reaching the error-files
-    raise ValueError
+    raise UnrecognisedBooleanError(obj)
 
 
 _VERSION_REGEX: re.Pattern[str] = re.compile(r"^__version__\s*=\s*[\'\"]([^\'\"]*)[\'\"]", re.MULTILINE)
