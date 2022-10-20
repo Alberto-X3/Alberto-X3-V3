@@ -9,6 +9,7 @@ __all__ = (
 )
 
 from asyncio import (
+    AbstractEventLoop,
     Event,
     Lock,
     Semaphore,
@@ -19,31 +20,35 @@ from asyncio import (
 )
 from functools import partial, update_wrapper, wraps
 from threading import Thread as t_Thread
-from typing import TYPE_CHECKING
+from typing import TypeVar, ParamSpec, Literal, Callable, Awaitable, NoReturn
 from .constants import MISSING
 from .errors import GatherAnyError
 
-if TYPE_CHECKING:
-    from typing import Awaitable, NoReturn, ParamSpec, TypeVar
 
-    T = TypeVar("T")
-    P = ParamSpec("P")
+T = TypeVar("T")
+P = ParamSpec("P")
+
+_THREAD_RETURN = tuple[Literal[True], T] | tuple[Literal[False], Exception]
+_FUNC = Callable[P, T]
 
 
-event_loop = get_event_loop()
+event_loop: AbstractEventLoop = get_event_loop()
 
 
 class Thread(t_Thread):
-    _return = MISSING, MISSING
+    _return: _THREAD_RETURN = MISSING
+    _func: _FUNC
+    _event: Event
+    _loop: AbstractEventLoop
 
-    def __init__(self, func, loop):
+    def __init__(self, func: _FUNC, loop: AbstractEventLoop):
         super().__init__()
 
         self._func = func
         self._event = Event()
         self._loop = loop
 
-    async def wait(self):
+    async def wait(self) -> _THREAD_RETURN:
         """
         Returns
         -------
@@ -54,7 +59,7 @@ class Thread(t_Thread):
         await self._event.wait()
         return self._return
 
-    def run(self, *args, **kwargs):
+    def run(self, *args: P.args, **kwargs: P.kwargs) -> NoReturn:
         try:
             self._return = True, self._func(*args, **kwargs)
         except Exception as e:
@@ -63,17 +68,20 @@ class Thread(t_Thread):
 
 
 class LockDeco:
-    def __init__(self, func):
+    lock: Lock
+    func: _FUNC
+
+    def __init__(self, func: _FUNC):
         self.lock = Lock()
         self.func = func
         update_wrapper(self, func)
 
-    async def __call__(self, *args, **kwargs):
+    async def __call__(self, *args: P.args, **kwargs: P.kwargs) -> T:
         async with self.lock:
             return await self.func(*args, **kwargs)
 
 
-async def gather_any(*coroutines):
+async def gather_any(*coroutines: Awaitable[T]) -> tuple[int, T]:
     """
     Parameters
     ----------
@@ -114,7 +122,7 @@ async def gather_any(*coroutines):
         return index, value
 
 
-async def run_in_thread(func, *args, **kwargs):
+async def run_in_thread(func: _FUNC, *args: P.args, **kwargs: P.kwargs) -> T:
     """
     Parameters
     ----------
@@ -144,7 +152,7 @@ async def run_in_thread(func, *args, **kwargs):
         return result
 
 
-async def semaphore_gather(n, /, *tasks):
+async def semaphore_gather(n: int, /, *tasks: Awaitable[T]) -> list[T]:
     """
     Runs multiple tasks at once and returns their returns.
 
@@ -169,7 +177,7 @@ async def semaphore_gather(n, /, *tasks):
     return list(await gather(*map(inner, tasks)))
 
 
-def run_as_task(func):
+def run_as_task(func: _FUNC) -> _FUNC:
     """
     Parameters
     ----------
@@ -183,7 +191,7 @@ def run_as_task(func):
     """
 
     @wraps(func)
-    async def inner(*args: P.args, **kwargs: P.kwargs):
+    async def inner(*args: P.args, **kwargs: P.kwargs) -> NoReturn:
         create_task(func(*args, **kwargs))
 
     return inner

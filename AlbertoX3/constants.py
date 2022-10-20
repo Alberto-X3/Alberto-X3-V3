@@ -6,16 +6,15 @@ __all__ = (
 )
 
 
-from naff import Missing
+from naff import Missing, Absent
 from pathlib import Path
 from yaml import safe_load
 from .contributors import Contributor
-from .misc import FormatStr
-from .utils import get_bool, get_lib_version
+from .misc import FormatStr, PrimitiveExtension
 
 
-LIB_PATH = Path().resolve()
-MISSING = Missing()
+LIB_PATH: Path = Path().resolve()
+MISSING: Missing = Missing()
 
 
 class Config:
@@ -24,38 +23,41 @@ class Config:
     """
 
     __slots__ = ()
-    _instance = []
+    _instance: list["Config"] = []
 
     # bot
-    NAME = MISSING
-    VERSION = MISSING
-    PREFIX = MISSING
+    NAME: Absent[str] = MISSING
+    VERSION: Absent[str] = MISSING
+    PREFIX: Absent[str] = MISSING
     # repo
-    REPO_OWNER = MISSING
-    REPO_NAME = MISSING
-    REPO_LINK = MISSING
-    REPO_ICON = MISSING
+    REPO_OWNER: Absent[str] = MISSING
+    REPO_NAME: Absent[str] = MISSING
+    REPO_LINK: Absent[str] = MISSING
+    REPO_ICON: Absent[str] = MISSING
     # help
-    SUPPORT_DISCORD = MISSING
+    SUPPORT_DISCORD: Absent[str] = MISSING
     # developers
-    AUTHOR = MISSING
-    CONTRIBUTORS = MISSING
+    AUTHOR: Absent[Contributor] = MISSING
+    CONTRIBUTORS: Absent[set[Contributor]] = MISSING
     # language
-    LANGUAGE_DEFAULT = MISSING
-    LANGUAGE_FALLBACK = MISSING
-    LANGUAGE_AVAILABLE = MISSING
+    LANGUAGE_DEFAULT: Absent[str] = MISSING
+    LANGUAGE_FALLBACK: Absent[str] = MISSING
+    LANGUAGE_AVAILABLE: Absent[list[str]] = MISSING
     # extensions
-    EXTENSIONS_FOLDER_RAW = MISSING
-    EXTENSIONS_FOLDER = MISSING
-    EXTENSIONS = MISSING
+    EXTENSIONS_FOLDER_RAW: Absent[str] = MISSING
+    EXTENSIONS_FOLDER: Absent[Path] = MISSING
+    EXTENSIONS: Absent[set[PrimitiveExtension]] = MISSING
     # tmp
-    TMP_FOLDER_RAW = MISSING
-    TMP_FOLDER = MISSING
-    TMP_PATTERN = MISSING
-    TMP_REMOVE_AUTO = MISSING
-    TMP_REMOVE_ON_STARTUP = MISSING
+    TMP_FOLDER_RAW: Absent[str] = MISSING
+    TMP_FOLDER: Absent[Path] = MISSING
+    TMP_PATTERN: Absent[FormatStr] = MISSING
+    TMP_REMOVE_AUTO: Absent[bool] = MISSING
+    TMP_REMOVE_ON_STARTUP: Absent[bool] = MISSING
 
-    def __new__(cls, path):
+    def __new__(cls, path: Path):
+        # due to circular imports
+        from .utils import get_bool, get_lib_version
+
         config = safe_load(path.read_text("utf-8"))
 
         # bot
@@ -116,50 +118,50 @@ class StyleConfig:
 
     __slots__ = ()
 
-    t_attribute = "Attribute"
-    t_value = "Value"
-    vl = "║"  # vertical left
-    vm = "│"  # vertical middle
-    vr = "║"  # vertical right
-    ht = "═"  # horizontal top
-    hm = "═"  # horizontal middle
-    hb = "═"  # horizontal bottom
-    tl = "╔"  # top left
-    tm = "╤"  # top middle (connector)
-    tr = "╗"  # top right
-    ml = "╠"  # middle left (connector)
-    mm = "╪"  # center
-    mr = "╣"  # middle right (connector)
-    bl = "╚"  # bottom left
-    bm = "╧"  # bottom middle (connector)
-    br = "╝"  # bottom right
+    t_attribute: str = "Attribute"
+    t_value: str = "Value"
+    vl: str = "║"  # vertical left
+    vm: str = "│"  # vertical middle
+    vr: str = "║"  # vertical right
+    ht: str = "═"  # horizontal top
+    hm: str = "═"  # horizontal middle
+    hb: str = "═"  # horizontal bottom
+    tl: str = "╔"  # top left
+    tm: str = "╤"  # top middle (connector)
+    tr: str = "╗"  # top right
+    ml: str = "╠"  # middle left (connector)
+    mm: str = "╪"  # center
+    mr: str = "╣"  # middle right (connector)
+    bl: str = "╚"  # bottom left
+    bm: str = "╧"  # bottom middle (connector)
+    br: str = "╝"  # bottom right
 
     def __new__(
         cls,
-        t_attribute=MISSING,
-        t_value=MISSING,
-        vl=MISSING,
-        vm=MISSING,
-        vr=MISSING,
-        ht=MISSING,
-        hm=MISSING,
-        hb=MISSING,
-        tl=MISSING,
-        tm=MISSING,
-        tr=MISSING,
-        ml=MISSING,
-        mm=MISSING,
-        mr=MISSING,
-        bl=MISSING,
-        bm=MISSING,
-        br=MISSING,
+        t_attribute: Absent[str] = MISSING,
+        t_value: Absent[str] = MISSING,
+        vl: Absent[str] = MISSING,
+        vm: Absent[str] = MISSING,
+        vr: Absent[str] = MISSING,
+        ht: Absent[str] = MISSING,
+        hm: Absent[str] = MISSING,
+        hb: Absent[str] = MISSING,
+        tl: Absent[str] = MISSING,
+        tm: Absent[str] = MISSING,
+        tr: Absent[str] = MISSING,
+        ml: Absent[str] = MISSING,
+        mm: Absent[str] = MISSING,
+        mr: Absent[str] = MISSING,
+        bl: Absent[str] = MISSING,
+        bm: Absent[str] = MISSING,
+        br: Absent[str] = MISSING,
     ):
         settings = locals()
         settings.pop("cls")
         return cls.from_dict(settings)
 
     @classmethod
-    def from_dict(cls, d, /):
+    def from_dict(cls, d: dict[str, Absent[str]], /) -> "StyleConfig":
         self = super().__new__(cls)
 
         for setting, character in d.items():
