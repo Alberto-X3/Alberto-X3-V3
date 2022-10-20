@@ -11,7 +11,7 @@ body:
       value: >
         Thanks for taking the time to fill out a bug report.
 
-        Note: English and German are both supported languages for PRs
+        Note: English and German are both supported languages for PRs.
 
 
   - type: input
