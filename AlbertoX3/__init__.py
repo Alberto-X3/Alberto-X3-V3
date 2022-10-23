@@ -13,4 +13,5 @@ from .enum import *
 from .environment import *
 from .errors import *
 from .misc import *
+from .translations import *
 from .utils import *
