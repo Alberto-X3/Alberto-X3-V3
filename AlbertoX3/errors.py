@@ -4,7 +4,13 @@ __all__ = (
     "DeveloperArgumentError",
     "GatherAnyError",
     "UnrecognisedBooleanError",
+    "TranslationError",
+    "UnsupportedTranslationTypeError",
+    "UnsupportedLanguageError",
 )
+
+
+from naff import Absent, MISSING
 
 
 class AlbertoX3Error(Exception):
@@ -42,3 +48,43 @@ class UnrecognisedBooleanError(AlbertoX3Error):
 
     def __str__(self) -> str:
         return f"Unable to assign {self.obj.__class__.__qualname__} with value {self.obj!r} to either True or False!"
+
+
+class TranslationError(AlbertoX3Error):
+    pass
+
+
+class UnsupportedTranslationTypeError(TranslationError):
+    key: str
+    type: object  # noqa: A003
+    supported: list[object]
+
+    def __init__(self, key: str, type: object, supported: Absent[list[object]] = MISSING):  # noqa: A002
+        self.key = key
+        self.type = type
+        if supported is MISSING:
+            self.supported = []
+        else:
+            self.supported = supported
+
+    def __str__(self) -> str:
+        return f"Unsupported type {self.type!r} for {self.key!r}!" + (
+            f" Following types are supported: {', '.join(f'{s!r}' for s in self.supported)}" if self.supported else ""
+        )
+
+
+class UnsupportedLanguageError(TranslationError):
+    language: str
+    supported: list[str]
+
+    def __init__(self, language: str, supported: Absent[list[str]] = MISSING):
+        self.language = language
+        if supported is MISSING:
+            from .constants import Config
+
+            self.supported = Config.LANGUAGE_AVAILABLE
+        else:
+            self.supported = supported
+
+    def __str__(self) -> str:
+        return f"Unsupported language {self.language!r}! Supported languages are: {', '.join(self.supported)}"
