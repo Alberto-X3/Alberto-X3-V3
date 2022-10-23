@@ -1,0 +1,13 @@
+internal_error: An internal error occurred :(
+permission_denied: Permission denied!
+permission_granted: Permission granted!
+access_denied: Access denied!
+access_granted: Access granted!
+enabled: ":white_checkmark: Enabled"
+disabled: ":x: Disabled"
+error: ":x: Error"
+executed_by: Executed by {user} ({id})
+no_reason: No reason
+not_found:
+  user: Can't find this user... :(
+  unable: Unable to find `{query}`
