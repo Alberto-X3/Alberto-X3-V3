@@ -13,7 +13,7 @@ from .contributors import Contributor
 from .misc import FormatStr, PrimitiveExtension
 
 
-LIB_PATH: Path = Path().resolve()
+LIB_PATH: Path = Path(__file__).parent
 MISSING: Missing = Missing()
 
 
@@ -56,7 +56,7 @@ class Config:
 
     def __new__(cls, path: Path):
         # due to circular imports
-        from .utils import get_bool, get_lib_version
+        from .utils import get_bool, get_lib_version, get_extensions
 
         config = safe_load(path.read_text("utf-8"))
 
@@ -89,7 +89,7 @@ class Config:
         if not folder.is_absolute():
             folder = LIB_PATH.joinpath(folder)
         cls.EXTENSIONS_FOLDER = folder
-        cls.EXTENSIONS = MISSING
+        cls.EXTENSIONS = get_extensions()
 
         # tmp
         cls.TMP_FOLDER_RAW = (folder := config["tmp"]["folder"])

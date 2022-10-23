@@ -15,7 +15,7 @@ language:
     - EN
 
 extensions:
-  folder: "./AlbertoX3/extensions/"
+  folder: "extensions"
 
 tmp:
   folder: "./tmp/"

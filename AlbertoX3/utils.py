@@ -2,6 +2,7 @@ __all__ = (
     "get_value_table",
     "get_bool",
     "get_lib_version",
+    "get_extensions",
     "get_subclasses_in_extensions",
     "get_language",
     "get_member",
@@ -11,11 +12,11 @@ __all__ = (
 
 import re
 from naff import Context, User, Member, Snowflake_Type, Guild, Absent
+from pathlib import Path
 from typing import TypeVar, Optional
-from .constants import MISSING, LIB_PATH, StyleConfig
+from .constants import MISSING, LIB_PATH, StyleConfig, Config
 from .errors import DeveloperArgumentError, UnrecognisedBooleanError
 from .misc import PrimitiveExtension
-
 
 T = TypeVar("T")
 
@@ -59,9 +60,6 @@ def get_value_table(obj: object, /, *, style: Absent[dict[str, str] | StyleConfi
     ... # ║ spam      │ 'EGG!!1!'    ║
     ... # ╚═══════════╧══════════════╝
     """
-    # circular imports...
-    from .constants import StyleConfig
-
     if style is MISSING:
         style = StyleConfig()
     if isinstance(style, dict):
@@ -172,6 +170,24 @@ def get_lib_version() -> str:
         ...
 
     return version
+
+
+def get_extensions(folder: Absent[Path] = MISSING) -> set[PrimitiveExtension]:
+    if folder is MISSING:
+        folder = Config.EXTENSIONS_FOLDER
+
+    extensions: set[PrimitiveExtension] = set()
+
+    for ext in folder.iterdir():
+        if not ext.is_dir():
+            # isn't a directory
+            continue
+        if not any(e.name == "__init__.py" for e in ext.iterdir()):
+            # isn't a package
+            continue
+        extensions.add(PrimitiveExtension(name=ext.name, package=f"{folder.name}.{ext.name}", path=ext))
+
+    return extensions
 
 
 def get_subclasses_in_extensions(
