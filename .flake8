@@ -46,3 +46,5 @@ extend-ignore =
 
 exclude = .git,__pycache__
 max-line-length = 120
+per-file-ignores =
+    tests/test_*.py:ANN201,S101
