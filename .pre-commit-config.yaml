@@ -13,18 +13,18 @@ repos:
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
   - repo: https://github.com/PyCQA/autoflake
-    rev: v1.4
+    rev: v1.7.7
     hooks:
       - id: autoflake
         args: [--remove-all-unused-imports, --in-place, --ignore-init-module-imports]
   - repo: https://github.com/psf/black
-    rev: 22.6.0
+    rev: 22.10.0
     hooks:
       - id: black
         language_version: python3.10
 
   - repo: https://github.com/pycqa/flake8
-    rev: 4.0.1
+    rev: 5.0.4
     hooks:
       - id: flake8
         additional_dependencies:
