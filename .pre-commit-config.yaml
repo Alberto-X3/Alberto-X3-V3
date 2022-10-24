@@ -13,31 +13,33 @@ repos:
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
   - repo: https://github.com/PyCQA/autoflake
-    rev: v1.4
+    rev: v1.7.7
     hooks:
       - id: autoflake
         args: [--remove-all-unused-imports, --in-place, --ignore-init-module-imports]
   - repo: https://github.com/psf/black
-    rev: 22.6.0
+    rev: 22.10.0
     hooks:
       - id: black
         language_version: python3.10
 
   - repo: https://github.com/pycqa/flake8
-    rev: 4.0.1
+    rev: 5.0.4
     hooks:
       - id: flake8
         additional_dependencies:
-          - flake8-annotations~=2.0
-          - flake8-bandit~=3.0
-          - flake8-docstrings~=1.5
+          - flake8-annotations
+          - flake8-bandit
+          - flake8-docstrings
           - flake8-bugbear
           - flake8-comprehensions
           - flake8-quotes
           - flake8-raise
           - flake8-deprecated
           - flake8-print
-          - flake8-dunder-all
+          # - flake8-dunder-all  # plugin code for `flake8-dunder-all[DALL]` does not match ^[A-Z]{1,3}[0-9]{0,3}$
+          # using fix from @Aspect1103 instead (PR isn't merged yet)
+          - git+https://github.com/Aspect1103/flake8-dunder-all.git@flake8-regex-fix
           - flake8-pyi
           - flake8-debugger
           - flake8-builtins
