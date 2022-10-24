@@ -16,7 +16,8 @@ from pathlib import Path
 from typing import TypeVar, Optional
 from .constants import MISSING, LIB_PATH, StyleConfig, Config
 from .errors import DeveloperArgumentError, UnrecognisedBooleanError
-from .misc import PrimitiveExtension
+from .misc import PrimitiveExtension, EXTENSION_FEATURES
+
 
 T = TypeVar("T")
 
@@ -179,13 +180,16 @@ def get_extensions(folder: Absent[Path] = MISSING) -> set[PrimitiveExtension]:
     extensions: set[PrimitiveExtension] = set()
 
     for ext in folder.iterdir():
+        py_files = [e.name.removesuffix(".py") for e in ext.iterdir() if e.is_file() and e.name.endswith(".py")]
         if not ext.is_dir():
             # isn't a directory
             continue
-        if not any(e.name == "__init__.py" for e in ext.iterdir()):
+        if "__init__" not in py_files:
             # isn't a package
             continue
-        extensions.add(PrimitiveExtension(name=ext.name, package=f"{folder.name}.{ext.name}", path=ext))
+
+        features = {f for f in py_files if f in EXTENSION_FEATURES}
+        extensions.add(PrimitiveExtension(name=ext.name, package=f"{folder.name}.{ext.name}", path=ext, has=features))
 
     return extensions
 
