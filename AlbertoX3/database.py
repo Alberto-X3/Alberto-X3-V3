@@ -18,7 +18,6 @@ __all__ = (
 
 
 from aioredis import Redis
-from AlbertUnruhUtils.utils.logger import get_logger
 from asyncio import Event
 from contextlib import asynccontextmanager
 from contextvars import ContextVar
@@ -55,12 +54,13 @@ from .environment import (
     REDIS_PORT,
     REDIS_PASSWORD,
 )
+from .utils import get_logger
 
 
 T = TypeVar("T")
 P = ParamSpec("P")
 
-logger = get_logger(__name__.split(".")[-1], level=None, add_handler=False)
+logger = get_logger(__name__)
 
 
 redis: Redis = Redis(

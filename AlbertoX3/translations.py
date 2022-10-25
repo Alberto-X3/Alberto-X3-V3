@@ -6,7 +6,6 @@ __all__ = (
 )
 
 
-from AlbertUnruhUtils.utils.logger import get_logger
 from naff import Absent
 from pathlib import Path
 from typing import NoReturn
@@ -14,10 +13,10 @@ from yaml import safe_load
 from .constants import Config, MISSING
 from .errors import UnsupportedLanguageError, UnsupportedTranslationTypeError
 from .misc import FormatStr, PrimitiveExtension
-from .utils import get_language
+from .utils import get_language, get_logger
 
 
-logger = get_logger(__name__.split(".")[-1], level=None, add_handler=False)
+logger = get_logger(__name__)
 
 
 def merge(base: dict, src: dict) -> dict:

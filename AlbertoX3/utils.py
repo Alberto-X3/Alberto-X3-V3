@@ -1,4 +1,5 @@
 __all__ = (
+    "get_logger",
     "get_value_table",
     "get_bool",
     "get_lib_version",
@@ -11,6 +12,11 @@ __all__ = (
 
 
 import re
+from AlbertUnruhUtils.utils.logger import (
+    get_logger as auu_get_logger,
+    _LOG_LEVEL_STR,
+)  # noqa (_LOG_LEVEL_STR is not in __all__)
+from logging import Logger
 from naff import Context, User, Member, Snowflake_Type, Guild, Absent
 from pathlib import Path
 from typing import TypeVar, Optional
@@ -20,6 +26,38 @@ from .misc import PrimitiveExtension, EXTENSION_FEATURES
 
 
 T = TypeVar("T")
+
+
+def get_logger(name: str, level: Optional[_LOG_LEVEL_STR | int] = None) -> Logger:
+    """
+    Gets a logger.
+
+    Notes
+    -----
+    You should only pass a hardcoded name for ``name`` or use ``__name__``.
+    Noteworthy is that any names containing a "." (dot) will be modified.
+
+    Parameters
+    ----------
+    name: str
+        The loggers name. (Set a name or use ``__name__``/``__package__`` in any extension or ``__name__``)
+    level: _LOG_LEVEL_STR, int, optional
+        The loglevel for the logger.
+
+    Returns
+    -------
+    Logger
+        The created logger.
+    """
+    if "." in name:
+        parts = name.split(".")
+        match len(parts):
+            case 2:  # __package__ from an ext/__name__ from AlbertoX3.*-file
+                name = parts[1]
+            case 3:  # __name__ from an ext
+                name = parts[1]
+
+    return auu_get_logger(name=name, level=level, add_handler=False)
 
 
 def get_value_table(obj: object, /, *, style: Absent[dict[str, str] | StyleConfig] = MISSING) -> str:
