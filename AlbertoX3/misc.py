@@ -84,7 +84,4 @@ class PrimitiveExtension:
         return (self.features & (1 << i)) == (1 << i)
 
     def __repr__(self) -> str:
-        return f"<{self.__class__.__name__} ({self.name!r} ({self.features}) at {self.path})>"
-
-    def __str__(self) -> str:
         return f"<{self.__class__.__name__} {self.name!r} ({self.features})>"
