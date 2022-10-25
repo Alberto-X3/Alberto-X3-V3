@@ -243,8 +243,8 @@ def get_language(
     return None
 
 
-_ID_REGEX: re.Pattern[str] = re.compile(r"^(\d{7,20})$")
-_MENTION_REGEX: re.Pattern[str] = re.compile(r"^<@!?(\d{7,20})>$")
+_ID_REGEX: re.Pattern[str] = re.compile(r"^([1-9]\d{6,19})$")
+_MENTION_REGEX: re.Pattern[str] = re.compile(r"^<@!?([1-9]\d{6,19})>$")
 _NAME_REGEX: re.Pattern[str] = re.compile(r"^(.{2,32})#(\d{4})$")
 
 
