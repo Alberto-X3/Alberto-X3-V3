@@ -180,6 +180,8 @@ def get_extensions(folder: Absent[Path] = MISSING) -> set[PrimitiveExtension]:
     extensions: set[PrimitiveExtension] = set()
 
     for ext in folder.iterdir():
+        if not ext.is_dir():
+            continue
         py_files = [e.name.removesuffix(".py") for e in ext.iterdir() if e.is_file() and e.name.endswith(".py")]
         if not ext.is_dir():
             # isn't a directory
