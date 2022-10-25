@@ -9,6 +9,7 @@ from .aio import *
 from .colors import *
 from .constants import *
 from .contributors import *
+from .database import *
 from .enum import *
 from .environment import *
 from .errors import *
