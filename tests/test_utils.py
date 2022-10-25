@@ -75,6 +75,9 @@ def test_name_regex():
     assert match("AlbertUnruh#3643").group(1) == "AlbertUnruh"
     assert match("AlbertUnruh#3643").group(2) == "3643"
 
+    assert match("𝖈𝖗𝖊𝖆𝖙𝖎𝖛𝖊 𝖘𝖆𝖚𝖘𝖆𝖌𝖊#1234").group(1) is not None
+    assert match("𝕔𝕣𝕖𝕒𝕥𝕚𝕧𝕖 𝕤𝕒𝕦𝕤𝕒𝕘𝕖#1234").group(1) is not None
+
 
 def test_get_language():
     assert pytest.raises(errors.DeveloperArgumentError, lambda: utils.get_language())
