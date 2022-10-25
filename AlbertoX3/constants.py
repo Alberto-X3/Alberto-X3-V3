@@ -58,33 +58,37 @@ class Config:
         # due to circular imports
         from .utils import get_bool, get_lib_version, get_extensions
 
-        config = safe_load(path.read_text("utf-8"))
+        config: dict[str, ...] = safe_load(path.read_text("utf-8"))
 
         # bot
-        cls.NAME = config["name"]
+        cls.NAME = config.get("name", MISSING)
         cls.VERSION = get_lib_version()
         cls.PREFIX = config["prefix"]
 
         # repo
-        cls.REPO_OWNER = config["repo"]["owner"]
-        cls.REPO_NAME = config["repo"]["name"]
-        cls.REPO_LINK = f"https://github.com/{cls.REPO_OWNER}/{cls.REPO_NAME}"
-        cls.REPO_ICON = config["repo"]["icon"]
+        repo: Absent[dict[str, str]] = config.get("repo", MISSING)
+        if repo is not MISSING:
+            cls.REPO_OWNER = repo["owner"]
+            cls.REPO_NAME = repo["name"]
+            cls.REPO_LINK = f"https://github.com/{cls.REPO_OWNER}/{cls.REPO_NAME}"
+            cls.REPO_ICON = repo["icon"]
 
         # help
-        cls.SUPPORT_DISCORD = config["discord"]
+        cls.SUPPORT_DISCORD = config.get("discord", MISSING)
 
         # developers
         cls.AUTHOR = Contributor.AlbertUnruh
         cls.CONTRIBUTORS = set(Contributor.__members__.values())
 
         # language
-        cls.LANGUAGE_DEFAULT = config["language"]["default"]
-        cls.LANGUAGE_FALLBACK = config["language"]["fallback"]
-        cls.LANGUAGE_AVAILABLE = config["language"]["available"]
+        language: dict[str, str | list[str]] = config.get("language", {})
+        cls.LANGUAGE_DEFAULT = language.get("default", "EN")
+        cls.LANGUAGE_FALLBACK = language.get("fallback", cls.LANGUAGE_FALLBACK)
+        cls.LANGUAGE_AVAILABLE = language.get("available", [cls.LANGUAGE_FALLBACK])
 
         # extensions
-        cls.EXTENSIONS_FOLDER_RAW = (folder := config["extensions"]["folder"])
+        extensions: dict[str, str] = config.get("extensions", {})
+        cls.EXTENSIONS_FOLDER_RAW = (folder := extensions.get("folder", "extensions"))
         folder = Path(folder)
         if not folder.is_absolute():
             folder = LIB_PATH.joinpath(folder)
@@ -92,14 +96,15 @@ class Config:
         cls.EXTENSIONS = get_extensions()
 
         # tmp
-        cls.TMP_FOLDER_RAW = (folder := config["tmp"]["folder"])
+        tmp: dict[str, str | dict[str, str]] = config.get("tmp", {})
+        cls.TMP_FOLDER_RAW = (folder := tmp.get("folder", "tmp"))
         folder = Path(folder)
         if not folder.is_absolute():
             folder = LIB_PATH.joinpath(folder)
         cls.TMP_FOLDER = folder
-        cls.TMP_PATTERN = FormatStr(config["tmp"]["pattern"])
-        cls.TMP_REMOVE_AUTO = get_bool(config["tmp"]["remove"]["auto"])
-        cls.TMP_REMOVE_ON_STARTUP = get_bool(config["tmp"]["remove"]["on_startup"])
+        cls.TMP_PATTERN = FormatStr(tmp.get("pattern", "{extension}.{id}.alberto-x3.tmp"))
+        cls.TMP_REMOVE_AUTO = get_bool(tmp.get("remove", {}).get("auto", True))
+        cls.TMP_REMOVE_ON_STARTUP = get_bool(tmp.get("remove", {}).get("on_startup", True))
 
         # getting the instance
         if not cls._instance:
