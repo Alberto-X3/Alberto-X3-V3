@@ -31,6 +31,7 @@ bot = Client(
     sync_ext=True,
     sync_interactions=True,
     delete_unused_application_cmds=True,
+    auto_defer=True,
 )
 
 
@@ -40,4 +41,4 @@ for ext in Config.EXTENSIONS:
 
 
 event_loop.run_until_complete(db.create_tables())
-bot.start(TOKEN)
+event_loop.run_until_complete(bot.astart(TOKEN))
