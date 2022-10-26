@@ -1,5 +1,6 @@
 __all__ = (
     "get_logger",
+    "get_utcnow",
     "get_value_table",
     "get_bool",
     "get_lib_version",
@@ -14,8 +15,9 @@ __all__ = (
 import re
 from AlbertUnruhUtils.utils.logger import (
     get_logger as auu_get_logger,
-    _LOG_LEVEL_STR,
-)  # noqa (_LOG_LEVEL_STR is not in __all__)
+    _LOG_LEVEL_STR,  # noqa (_LOG_LEVEL_STR is not in __all__)
+)
+from datetime import datetime, timezone
 from logging import Logger
 from naff import Context, User, Member, Snowflake_Type, Guild, Absent
 from pathlib import Path
@@ -58,6 +60,12 @@ def get_logger(name: str, level: Optional[_LOG_LEVEL_STR | int] = None) -> Logge
                 name = parts[1]
 
     return auu_get_logger(name=name, level=level, add_handler=False)
+
+
+def get_utcnow() -> datetime:
+    now = datetime.utcnow()
+    utc = now.replace(tzinfo=timezone.utc)
+    return utc
 
 
 def get_value_table(obj: object, /, *, style: Absent[dict[str, str] | StyleConfig] = MISSING) -> str:
