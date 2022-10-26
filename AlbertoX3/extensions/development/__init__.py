@@ -1,9 +1,11 @@
-__all__ = ("Debug",)
+__all__ = (
+    "Debug",
+    "setup",
+)
 
 
-from naff import Client
 from .ext import Debug
 
 
-def setup(bot: Client):
+def setup(bot):
     Debug(bot)

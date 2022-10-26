@@ -5,6 +5,9 @@ from naff import Client, Intents
 
 logger = get_logger(None, level=LOG_LEVEL)
 
+# naff debugger
+__import__("naff").logger.setLevel("INFO")  # don't need naff in namespace
+
 # asyncio debugger
 if isinstance(LOG_LEVEL, int) or LOG_LEVEL.isnumeric():
     event_loop.set_debug(int(LOG_LEVEL) <= 10)

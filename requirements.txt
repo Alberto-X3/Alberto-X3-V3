@@ -1,7 +1,7 @@
 aenum~=3.1.11
 aiomysql~=0.1.1
 aioredis~=2.0.1
-AlbertUnruhUtils.py~=2.2.1
+AlbertUnruhUtils.py~=2.3.0
 NAFF[voice,speedup]~=1.12.0
 python-dotenv~=0.21.0
 PyYAML~=6.0
