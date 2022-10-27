@@ -35,10 +35,16 @@ bot = Client(
 )
 
 
+# load extensions
+ext: PrimitiveExtension
 for ext in Config.EXTENSIONS:
     logger.info(f"Adding Extension {ext.name!r} ({ext.features}) from {ext.package!r}")
     bot.load_extension(".", f"{ext.package}")
 
 
-event_loop.run_until_complete(db.create_tables())
-event_loop.run_until_complete(bot.astart(TOKEN))
+async def a_main():
+    await db.create_tables()
+    await bot.astart(TOKEN)
+
+
+event_loop.run_until_complete(a_main())
