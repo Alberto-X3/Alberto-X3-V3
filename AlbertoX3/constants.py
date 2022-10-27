@@ -121,8 +121,6 @@ class StyleConfig:
     Used in over in .utils for get_value_table().
     """
 
-    __slots__ = ()
-
     t_attribute: str = "Attribute"
     t_value: str = "Value"
     vl: str = "║"  # vertical left
