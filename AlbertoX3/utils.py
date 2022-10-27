@@ -13,6 +13,7 @@ __all__ = (
 
 
 import re
+import sys
 from AlbertUnruhUtils.utils.logger import (
     get_logger as auu_get_logger,
     _LOG_LEVEL_STR,  # noqa (_LOG_LEVEL_STR is not in __all__)
@@ -28,6 +29,7 @@ from .misc import PrimitiveExtension, EXTENSION_FEATURES
 
 
 T = TypeVar("T")
+C = TypeVar("C", bound=type[object])
 
 
 def get_logger(name: str, level: Optional[_LOG_LEVEL_STR | int] = None) -> Logger:
@@ -242,11 +244,13 @@ def get_extensions(folder: Absent[Path] = MISSING) -> set[PrimitiveExtension]:
     return extensions
 
 
-def get_subclasses_in_extensions(
-    base: type[T], *, extensions: Absent[list[PrimitiveExtension]] = MISSING  # noqa: F841
-) -> list[type[T]]:
-    # isn't implemented yet -> is static
-    return []
+def get_subclasses_in_extensions(base: C, *, extensions: Absent[list[PrimitiveExtension]] = MISSING) -> list[C]:
+    if extensions is MISSING:
+        extensions = Config.EXTENSIONS
+
+    packages: set[str] = {ext.package for ext in extensions}
+
+    return [cls for cls in base.__subclasses__() if sys.modules[cls.__module__].__package__ in packages]
 
 
 def get_language(
