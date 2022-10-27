@@ -1,10 +1,10 @@
 __all__ = ("Moderation",)
 
 
-from AlbertoX3 import get_logger
+from AlbertoX3 import get_logger, Extension
 from datetime import datetime, timezone
 from datetimeparser import parse
-from naff import Extension, InteractionContext, Member, OptionTypes, SlashCommandOption, slash_command
+from naff import InteractionContext, Member, OptionTypes, SlashCommandOption, slash_command
 from .db import BanModel, UnbanModel, KickModel, MuteModel, UnmuteModel, DeleteModel
 
 
@@ -54,15 +54,12 @@ class Moderation(Extension):
                 until = parsed.replace(tzinfo=timezone.utc)
 
         logger.warning(f"{__name__}.Moderation.ban has no actual functionality!")
-        from AlbertoX3.database import db_context
-
-        async with db_context():
-            await BanModel.add(
-                member=user.id,
-                executor=ctx.author.id,
-                reason=reason,
-                until=until,
-            )
+        await BanModel.add(
+            member=user.id,
+            executor=ctx.author.id,
+            reason=reason,
+            until=until,
+        )
 
         if until:
             info = f"(until <t:{int(until.timestamp())}:f>)"
@@ -97,14 +94,11 @@ class Moderation(Extension):
             reason = "NO REASON -- REPLACE THIS WITH TRANSLATION"
 
         logger.warning(f"{__name__}.Moderation.unban has no actual functionality!")
-        from AlbertoX3.database import db_context
-
-        async with db_context():
-            await UnbanModel.add(
-                member=user.id,
-                executor=ctx.author.id,
-                reason=reason,
-            )
+        await UnbanModel.add(
+            member=user.id,
+            executor=ctx.author.id,
+            reason=reason,
+        )
 
         await ctx.send(f"Unbanned ``{user.tag}`` with reason ``{reason}``")
 
@@ -134,14 +128,11 @@ class Moderation(Extension):
             reason = "NO REASON -- REPLACE THIS WITH TRANSLATION"
 
         logger.warning(f"{__name__}.Moderation.kick has no actual functionality!")
-        from AlbertoX3.database import db_context
-
-        async with db_context():
-            await KickModel.add(
-                member=user.id,
-                executor=ctx.author.id,
-                reason=reason,
-            )
+        await KickModel.add(
+            member=user.id,
+            executor=ctx.author.id,
+            reason=reason,
+        )
 
         await ctx.send(f"Kicked ``{user.tag}`` with reason ``{reason}``")
 
@@ -187,15 +178,12 @@ class Moderation(Extension):
                 until = parsed.replace(tzinfo=timezone.utc)
 
         logger.warning(f"{__name__}.Moderation.mute has no actual functionality!")
-        from AlbertoX3.database import db_context
-
-        async with db_context():
-            await MuteModel.add(
-                member=user.id,
-                executor=ctx.author.id,
-                reason=reason,
-                until=until,
-            )
+        await MuteModel.add(
+            member=user.id,
+            executor=ctx.author.id,
+            reason=reason,
+            until=until,
+        )
 
         if until:
             info = f"(until <t:{int(until.timestamp())}:f>)"
@@ -230,14 +218,11 @@ class Moderation(Extension):
             reason = "NO REASON -- REPLACE THIS WITH TRANSLATION"
 
         logger.warning(f"{__name__}.Moderation.unmute has no actual functionality!")
-        from AlbertoX3.database import db_context
-
-        async with db_context():
-            await UnmuteModel.add(
-                member=user.id,
-                executor=ctx.author.id,
-                reason=reason,
-            )
+        await UnmuteModel.add(
+            member=user.id,
+            executor=ctx.author.id,
+            reason=reason,
+        )
 
         await ctx.send(f"Unmuted ``{user.tag}`` with reason ``{reason}``")
 
@@ -265,15 +250,12 @@ class Moderation(Extension):
     )
     async def delete(self, ctx: InteractionContext, *, amount: int, user: Member | None = None):
         logger.warning(f"{__name__}.Moderation.delete has no actual functionality!")
-        from AlbertoX3.database import db_context
-
-        async with db_context():
-            await DeleteModel.add(
-                amount=amount,
-                channel=ctx.channel.id,
-                executor=ctx.author.id,
-                user=user.id,
-            )
+        await DeleteModel.add(
+            amount=amount,
+            channel=ctx.channel.id,
+            executor=ctx.author.id,
+            user=user.id,
+        )
 
         if user is not None:
             info = user.tag

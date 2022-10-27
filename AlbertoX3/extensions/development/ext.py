@@ -1,9 +1,9 @@
 __all__ = ("Debug",)
 
 
-from AlbertoX3 import get_logger, get_value_table, Config
+from AlbertoX3 import get_logger, get_value_table, Config, Extension
 from io import StringIO
-from naff import Extension, InteractionContext, File
+from naff import InteractionContext, File
 from naff.ext.debug_extension import DebugExtension
 
 
