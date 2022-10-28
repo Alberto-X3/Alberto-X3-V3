@@ -334,36 +334,26 @@ async def get_member(ctx: Context, raw: User | Member | Snowflake_Type) -> Optio
             if (result := _MENTION_REGEX.match(raw)) is not None:
                 return await ctx.bot.fetch_member(ctx.guild_id, result.group(1))
 
-            # name#discriminator?
-            if (result := _NAME_REGEX.match(raw)) is not None:
-                name, discriminator = result.groups()
-                # cold also be done via ctx.guild.members, but get_user() would need this way anyway
-                for (_g_id, _u_id), member in ctx.bot.cache.member_cache.items():  # type: (int, int), Member
-                    if _g_id != ctx.guild_id:
-                        continue
-                    if member.username == name and member.discriminator == discriminator:
+            # try name.lower if name doesn't match
+            for converter in (str, str.lower):
+                raw = converter(raw)
+
+                # name#discriminator?
+                if (result := _NAME_REGEX.match(raw)) is not None:
+                    name, discriminator = result.groups()
+                    for member in ctx.guild.members:  # type: Member
+                        if converter(member.username) == name and member.discriminator == discriminator:
+                            return member
+
+                # name?
+                for member in ctx.guild.members:  # type: Member
+                    if converter(member.username) == raw:
                         return member
 
-            # name?
-            for (_g_id, _u_id), member in ctx.bot.cache.member_cache.items():  # type: (int, int), Member
-                if _g_id != ctx.guild_id:
-                    continue
-                if member.username == raw:
-                    return member
-
-            # nick?
-            for (_g_id, _u_id), member in ctx.bot.cache.member_cache.items():  # type: (int, int), Member
-                if _g_id != ctx.guild_id:
-                    continue
-                if member.nickname == raw:
-                    return member
-
-            # are name/nick lowercase?
-            if not raw.islower():
-                return await get_member(ctx, raw.lower())
-            else:
-                # get_user() already called itself with lowercase-name
-                return None
+                # nick?
+                for member in ctx.guild.members:  # type: Member
+                    if converter(member.nickname) == raw:
+                        return member
 
         case _ if hasattr(raw, "__int__"):
             # maybe a SnowflakeObject was passed
@@ -405,28 +395,25 @@ async def get_user(ctx: Context, raw: User | Member | Snowflake_Type) -> Optiona
             if (result := _MENTION_REGEX.match(raw)) is not None:
                 return await ctx.bot.fetch_user(result.group(1))
 
-            # name#discriminator?
-            if (result := _NAME_REGEX.match(raw)) is not None:
-                name, discriminator = result.groups()
-                for user in ctx.bot.cache.user_cache.items():  # type: User
-                    if user.username == name and user.discriminator == discriminator:
+            # try name.lower if name doesn't match
+            for converter in (str, str.lower):
+                raw = converter(raw)
+
+                # name#discriminator?
+                if (result := _NAME_REGEX.match(raw)) is not None:
+                    name, discriminator = result.groups()
+                    for user in ctx.bot.cache.user_cache.values():  # type: User
+                        if converter(user.username) == name and user.discriminator == discriminator:
+                            return user
+
+                # name?
+                for user in ctx.bot.cache.user_cache.values():  # type: User
+                    if converter(user.username) == raw:
                         return user
-
-            # name?
-            for user in ctx.bot.cache.user_cache.items():  # type: User
-                if user.username == raw:
-                    return user
-
-            # is name lowercase?
-            if not raw.islower():
-                return await get_member(ctx, raw.lower())
-            else:
-                # get_user() already called itself with lowercase-name
-                return None
 
         case _ if hasattr(raw, "__int__"):
             # maybe a SnowflakeObject was passed
-            return await get_member(ctx, int(raw))
+            return await get_user(ctx, int(raw))
 
         case _:
             return None
