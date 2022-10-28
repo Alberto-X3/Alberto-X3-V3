@@ -1,7 +1,12 @@
 __all__ = ("Extension",)
 
 
-from naff import Extension as naff_Extension, BaseCommand as naff_BaseCommand
+from naff import (
+    Extension as naff_Extension,
+    BaseCommand as naff_BaseCommand,
+    Listener as naff_Listener,
+    Task as naff_Task,
+)
 from typing import NoReturn, Any
 from .database import db_wrapper
 
@@ -11,7 +16,7 @@ class Extension(naff_Extension):
         if add_database_wrapper is True:
             for attr in dir(cls):
                 val = getattr(cls, attr)
-                if isinstance(val, naff_BaseCommand):
+                if isinstance(val, (naff_BaseCommand, naff_Listener, naff_Task)):
                     if val.checks:
                         val.checks = [db_wrapper(check) for check in val.checks]
                     if val.callback:
