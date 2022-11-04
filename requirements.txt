@@ -2,6 +2,7 @@ aenum~=3.1.11
 aiomysql~=0.1.1
 aioredis~=2.0.1
 AlbertUnruhUtils.py~=2.3.0
+cryptography~=38.0.3
 #NAFF[voice,speedup]~=1.12.0
 git+https://github.com/NAFTeam/NAFF.git@2.x#egg=NAFF[voice,speedup]
 python-datetimeparser==0.4.rc  # fix version since 0.5(rc) might be completely breaking
