@@ -16,14 +16,15 @@ class Extension(naff_Extension):
         if add_database_wrapper is True:
             for attr in dir(cls):
                 val = getattr(cls, attr)
-                if isinstance(val, (naff_BaseCommand, naff_Listener, naff_Task)):
+                if isinstance(val, naff_BaseCommand):
                     if val.checks:
                         val.checks = [db_wrapper(check) for check in val.checks]
-                    if val.callback:
-                        val.callback = db_wrapper(val.callback)
                     if val.error_callback:
                         val.error_callback = db_wrapper(val.error_callback)
                     if val.pre_run_callback:
                         val.pre_run_callback = db_wrapper(val.pre_run_callback)
                     if val.post_run_callback:
                         val.post_run_callback = db_wrapper(val.post_run_callback)
+                if isinstance(val, (naff_BaseCommand, naff_Listener, naff_Task)):
+                    if val.callback:
+                        val.callback = db_wrapper(val.callback)
