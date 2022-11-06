@@ -1,6 +1,3 @@
-from __future__ import annotations
-
-
 __all__ = (
     "TOKEN",
     "LOG_LEVEL",
@@ -24,7 +21,6 @@ __all__ = (
 
 from dotenv import load_dotenv
 from os import environ, getenv
-
 from .utils import get_bool
 
 
