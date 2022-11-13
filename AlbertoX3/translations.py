@@ -1,12 +1,13 @@
 __all__ = (
     "Translations",
+    "TranslationNamespace",
     "merge",
     "load_translations",
     "t",
 )
 
 
-from naff import Absent
+from naff import Absent, Context
 from pathlib import Path
 from typing import NoReturn
 from yaml import safe_load
@@ -105,8 +106,14 @@ class TranslationNamespace:
 
         return self._translations[lan]
 
-    def tn_get_translation(self, key: str) -> dict | str:
-        translations = self.tn_get_language(get_language() or Config.LANGUAGE_DEFAULT)
+    def tn_get_translation(self, key: str, ctx: Absent[Context] = MISSING) -> dict | str:
+        if ctx is MISSING:
+            translations = self.tn_get_language(Config.LANGUAGE_DEFAULT)
+        else:
+            translations = self.tn_get_language(
+                get_language(user=ctx.user) or get_language(guild=ctx.guild) or Config.LANGUAGE_DEFAULT
+            )
+
         if key not in translations:
             translations = self.tn_get_language(Config.LANGUAGE_FALLBACK)
 
@@ -116,7 +123,7 @@ class TranslationNamespace:
         return translation
 
     def __getattr__(self, item: str) -> TranslationDict | FormatStr:
-        value: dict | str = self.get(item, self._fallback[item])
+        value: dict | str = self.tn_get_translation(item)
         result: TranslationDict | FormatStr
 
         if isinstance(value, str):
