@@ -53,6 +53,11 @@ class Config:
     TMP_PATTERN: Absent[FormatStr] = MISSING
     TMP_REMOVE_AUTO: Absent[bool] = MISSING
     TMP_REMOVE_ON_STARTUP: Absent[bool] = MISSING
+    # auto
+    AUTO_HOUR: Absent[int] = MISSING
+    AUTO_MINUTE: Absent[int] = MISSING
+    AUTO_SECOND: Absent[int] = MISSING
+    AUTO_CHANNEL: Absent[int] = MISSING
 
     def __new__(cls, path: Path):
         # due to circular imports
@@ -105,6 +110,11 @@ class Config:
         cls.TMP_PATTERN = FormatStr(tmp.get("pattern", "{extension}.{id}.alberto-x3.tmp"))
         cls.TMP_REMOVE_AUTO = get_bool(tmp.get("remove", {}).get("auto", True))
         cls.TMP_REMOVE_ON_STARTUP = get_bool(tmp.get("remove", {}).get("on_startup", True))
+
+        cls.AUTO_HOUR = 0
+        cls.AUTO_MINUTE = 0
+        cls.AUTO_SECOND = 0
+        cls.AUTO_CHANNEL = 822589081337724939
 
         # getting the instance
         if not cls._instance:

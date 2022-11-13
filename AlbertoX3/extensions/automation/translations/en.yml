@@ -1,0 +1,6 @@
+not_installed: "`{lib}` is not installed!"
+update_check:
+  title: "Automation – Update Check"
+requirements:
+  ok: "· `{requirement}` ✅ `{version}`"
+  old: "· **`{requirement}`** ❌ `{version}` → `{new_version}`"
