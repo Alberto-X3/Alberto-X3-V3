@@ -9,4 +9,4 @@ git+https://github.com/NAFTeam/NAFF.git@dev#egg=NAFF[voice,speedup]
 git+https://github.com/aridevelopment-de/datetimeparser.git@dev#egg=python-datetimeparser
 python-dotenv~=0.21.0
 PyYAML~=6.0
-SQLAlchemy~=1.4.42
+SQLAlchemy~=1.4.45
