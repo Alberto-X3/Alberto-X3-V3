@@ -96,7 +96,7 @@ class Config:
         cls.EXTENSIONS_FOLDER_RAW = (folder := extensions.get("folder", "extensions"))
         folder = Path(folder)
         if not folder.is_absolute():
-            folder = LIB_PATH.joinpath(folder)
+            folder = path.parent.joinpath(folder)
         cls.EXTENSIONS_FOLDER = folder
         cls.EXTENSIONS = get_extensions()
 
@@ -105,7 +105,7 @@ class Config:
         cls.TMP_FOLDER_RAW = (folder := tmp.get("folder", "tmp"))
         folder = Path(folder)
         if not folder.is_absolute():
-            folder = LIB_PATH.joinpath(folder)
+            folder = path.parent.joinpath(folder)
         cls.TMP_FOLDER = folder
         cls.TMP_PATTERN = FormatStr(tmp.get("pattern", "{extension}.{id}.alberto-x3.tmp"))
         cls.TMP_REMOVE_AUTO = get_bool(tmp.get("remove", {}).get("auto", True))

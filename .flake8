@@ -84,6 +84,6 @@ max-line-length = 120
 per-file-ignores =
     tests/test_*.py:ANN201,S101
     AlbertoX3/__main__.py:DAL000,ANN201
-    AlbertoX3/extensions/*/__init__.py:ANN001,ANN201
-    AlbertoX3/extensions/*/db.py:A003
-    AlbertoX3/extensions/*/ext.py:ANN201
+    extensions/*/__init__.py:ANN001,ANN201
+    extensions/*/db.py:A003
+    extensions/*/ext.py:ANN201
