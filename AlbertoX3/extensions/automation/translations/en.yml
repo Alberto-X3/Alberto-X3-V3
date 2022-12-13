@@ -2,5 +2,8 @@ not_installed: "`{lib}` is not installed!"
 update_check:
   title: "Automation – Update Check"
 requirements:
-  ok: "· `{requirement}` ✅ `{version}`"
-  old: "· **`{requirement}`** ❌ `{version}` → `{new_version}`"
+  ok: "· `{requirement}` \\✅ `{version}`"
+  old: "· **`{requirement}`** \\❌ `{version}` → `{new_version}`"
+  ok_gh: "· `{requirement}` \\✅ `{branch}` (`{sha}`)"
+  old_gh: "· **`{requirement}`** \\❌ `{branch}` `{sha}` → `{new_sha}`"
+  unknown_gh: "· **`{requirement}`** \\❓ `{branch}` *`xxxxxx`* -> `{new_sha}`"
