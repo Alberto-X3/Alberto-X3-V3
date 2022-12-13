@@ -48,7 +48,7 @@ class Moderation(Extension):
 
         until: datetime | None = None
         if duration is not None:
-            parsed = parse(duration, "utc")
+            parsed = parse(duration, "utc").time
             utc = datetime.utcnow()  # don't use utils.get_utcnow since parse doesn't set tzinfo
             if parsed > utc:  # in the future
                 until = parsed.replace(tzinfo=timezone.utc)
@@ -172,7 +172,7 @@ class Moderation(Extension):
 
         until: datetime | None = None
         if duration is not None:
-            parsed = parse(duration, "utc")
+            parsed = parse(duration, "utc").time
             utc = datetime.utcnow()  # don't use utils.get_utcnow since parse doesn't set tzinfo
             if parsed > utc:  # in the future
                 until = parsed.replace(tzinfo=timezone.utc)
