@@ -1,6 +1,6 @@
 name: Feature Request
-description: Request new functionality.
-title: "[FEAT] Your Title Here"
+description: Request new functionality. *(These will affect the core of the bot)*
+title: "[FEAT REQ] Your Title Here"
 labels: ["feature request"]
 
 body:
