@@ -1,48 +1,83 @@
 [flake8]
 extend-ignore =
-    Q0, E501, C812, E203, W503  # These default to arguing with Black
+    Q0, E501, C812, E203, W503,
+    # These default to arguing with Black
 
-    ANN1, # These insist that we have Type Annotations for self and cls.
-    # ANN001, # Missing type annotation for function argument
-    # ANN002, # Missing type annotation for *args
-    # ANN003, # Missing type annotation for **kwargs
-    # ANN201, # Missing return type annotation for public function
-    # ANN202, # Missing return type annotation for protected function
-    # ANN203, # Missing return type annotation for secret function
-    ANN204, # Missing return type annotation for special method (__init__ etc)
-    # ANN205, # Missing return type annotation for staticmethod
-    # ANN206, # Missing return type annotation for classmethod
+    ANN1,
+    # These insist that we have Type Annotations for self and cls.
+    #ANN001,
+    # Missing type annotation for function argument
+    #ANN002,
+    # Missing type annotation for *args
+    #ANN003,
+    # Missing type annotation for **kwargs
+    #ANN201,
+    # Missing return type annotation for public function
+    #ANN202,
+    # Missing return type annotation for protected function
+    #ANN203,
+    # Missing return type annotation for secret function
+    ANN204,
+    # Missing return type annotation for special method (__init__ etc)
+    #ANN205,
+    # Missing return type annotation for staticmethod
+    #ANN206,
+    # Missing return type annotation for classmethod
 
-    B009, # Do not call getattr with a constant attribute value, it is not any safer than normal property access.
-    B010, # Do not call setattr with a constant attribute value, it is not any safer than normal property access.
+    B009,
+    # Do not call getattr with a constant attribute value, it is not any safer than normal property access.
+    B010,
+    # Do not call setattr with a constant attribute value, it is not any safer than normal property access.
 
-    D100, # Missing docstring in public module
-    D101, # ... class
-    D102, # ... method
-    D103, # ... function
-    D104, # ... package
-    D105, D107,  # Missing Docstrings in magic method and __init__
-    D200, # One-line docstring should fit on one line with quotes
-    D205, # 1 blank line required between summary line and description
-    D400, # First line should end with a period
-    D401, # First line should be in imperative mood; try rephrasing
+    D100,
+    # Missing docstring in public module
+    D101,
+    # ... class
+    D102,
+    # ... method
+    D103,
+    # ... function
+    D104,
+    # ... package
+    D105, D107,
+    # Missing Docstrings in magic method and __init__
+    D200,
+    # One-line docstring should fit on one line with quotes
+    D205,
+    # 1 blank line required between summary line and description
+    D400,
+    # First line should end with a period
+    D401,
+    # First line should be in imperative mood; try rephrasing
 
-    F401, # ... imported but unused
-    F403, # 'from module import *' used; unable to detect undefined names
-    F405, # ... may be undefined, or defined from star imports
+    F401,
+    # ... imported but unused
+    F403,
+    # 'from module import *' used; unable to detect undefined names
+    F405,
+    # ... may be undefined, or defined from star imports
 
-    R503, # missing explicit return at the  end of function ableto return non-None value.
-    R504, # unecessary variable assignement before return statement.
+    R503,
+    # missing explicit return at the  end of function ableto return non-None value.
+    R504,
+    # unecessary variable assignement before return statement.
 
-    S311, # Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+    S311,
+    # Standard pseudo-random generators are not suitable for security/cryptographic purposes.
 
-    T002, # add author into TODO
-    T003, # add link on issue into TODO
-    T004, # missed colon in TODO
-    T006, # write TODO instead of ToDo
+    T002,
+    # add author into TODO
+    T003,
+    # add link on issue into TODO
+    T004,
+    # missed colon in TODO
+    T006,
+    # write TODO instead of ToDo
 
-    U100, # Unused argument
-    U101, # Unused argument starting with an underscore
+    U100,
+    # Unused argument
+    U101,
+    # Unused argument starting with an underscore
 
 exclude = .git,__pycache__
 max-line-length = 120

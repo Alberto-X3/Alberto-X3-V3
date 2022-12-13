@@ -33,7 +33,9 @@ repos:
           - flake8-docstrings
           - flake8-bugbear
           - flake8-comprehensions
-          - flake8-quotes
+          # - flake8-quotes
+          # using dev version in hope it doesn't break
+          - git+https://github.com/zheller/flake8-quotes.git@master
           - flake8-raise
           - flake8-deprecated
           - flake8-print
