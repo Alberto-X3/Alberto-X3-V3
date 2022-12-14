@@ -2,22 +2,53 @@ file_case:
   title: "File Case #{id}"
   last_recent_title: "Last recent updated File Case: #{id}"
   description: "
+    Status: **{status}**
+
     Created: <t:{created}:f>
 
     Last Edited: <t:{last_edited}:f>
 
-    Author: <@{author}> ({author})
+    Author: <@{author}> (`{author}`)
     "
   case:
     judge:
       name: "Judge"
-      value: "<@{judge}> ({judge})"
+      value: "<@{judge}> (`{judge}`)"
+    lay_judge:
+      name: "Lay Judge"
+      value:
+        zero: "**/**"
+        one: "<@{lay_judge}> (`{lay_judge}`)"
     complainant:
       name: "Complainant"
-      value: "<@{complainant}> ({complainant})"
+      value: "<@{complainant}> (`{complainant}`)"
+    complainant_lawyer:
+      name: "Lawyer (Complainant)"
+      value:
+        zero: "**/**"
+        one: "<@{complainant_lawyer}> (`{complainant_lawyer}`)"
     defendant:
       name: "Defendant"
-      value: "<@{defendant}> ({defendant})"
-    appeal:
-      name: "Appeal"
-      value: "*{appeal}*"
+      value: "<@{defendant}> (`{defendant}`)"
+    defendant_lawyer:
+      name: "Lawyer (Defendant)"
+      value:
+        zero: "**/**"
+        one: "<@{defendant_lawyer}> (`{defendant_lawyer}`)"
+    witness:
+      name: "Witness"
+      value:
+        zero: "**/**"
+        one: "<@{witness}> (`{witness}`)"
+    expert:
+      name: "Expert"
+      value:
+        zero: "**/**"
+        one: "<@{expert}> (`{expert}`)"
+    accusation:
+      name: "Accusation"
+      value: "{accusation}"
+  status:
+    open: "Open 🔓"
+    active: "Active ⚖"
+    closed: "Closed 🔒"
