@@ -70,7 +70,9 @@ class CaseFileModel(Base):
         expert: int | None,
         accusation: str,
     ) -> "CaseFileModel":
-        return await db.add(CaseFileModel.preview(**locals()))
+        case_file = await db.add(CaseFileModel.preview(**locals()))
+        await db.commit()
+        return case_file
 
     @staticmethod
     async def get_by_id(id: int) -> "CaseFileModel | None":  # noqa A002

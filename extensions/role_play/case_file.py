@@ -126,11 +126,10 @@ class CaseFile(Extension):
         )
         await ctx.send_modal(modal)
         m_ctx: ModalContext = await self.bot.wait_for_modal(modal, ctx.author)
-        await m_ctx.defer()
 
         accusation = m_ctx.kwargs["accusation"]
         self.cf_accusation_cache[ctx.author.id] = accusation
-        await ctx.send(content="```{}```".format(accusation.replace("```", "\u200b``\u200b`")))
+        await m_ctx.send(content="```{}```".format(accusation.replace("```", "\u200b``\u200b`")))
 
         case_kwargs = {
             "author": ctx.author.id,
