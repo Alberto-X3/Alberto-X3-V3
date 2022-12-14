@@ -1,0 +1,54 @@
+file_case:
+  title: "Aktenfall #{id}"
+  last_recent_title: "Zuletzt aktualisierter Aktenfall: #{id}"
+  description: "
+    Status: **{status}**
+
+    Erstellt: <t:{created}:f>
+
+    Zuletzt bearbeitet: <t:{last_edited}:f>
+
+    Autor: <@{author}> (`{author}`)
+    "
+  case:
+    judge:
+      name: "Richter"
+      value: "<@{judge}> (`{judge}`)"
+    lay_judge:
+      name: "Schöffe"
+      value:
+        zero: "**/**"
+        one: "<@{lay_judge}> (`{lay_judge}`)"
+    complainant:
+      name: "Kläger"
+      value: "<@{complainant}> (`{complainant}`)"
+    complainant_lawyer:
+      name: "Anwalt (Kläger)"
+      value:
+        zero: "**/**"
+        one: "<@{complainant_lawyer}> (`{complainant_lawyer}`)"
+    defendant:
+      name: "Verteidiger"
+      value: "<@{defendant}> (`{defendant}`)"
+    defendant_lawyer:
+      name: "Anwalt (Verteidiger)"
+      value:
+        zero: "**/**"
+        one: "<@{defendant_lawyer}> (`{defendant_lawyer}`)"
+    witness:
+      name: "Zeuge"
+      value:
+        zero: "**/**"
+        one: "<@{witness}> (`{witness}`)"
+    expert:
+      name: "Gutachter"
+      value:
+        zero: "**/**"
+        one: "<@{expert}> (`{expert}`)"
+    accusation:
+      name: "Anschuldigung"
+      value: "{accusation}"
+  status:
+    open: "Offen 🔓"
+    active: "Aktiv ⚖"
+    closed: "Geschlossen 🔒"
