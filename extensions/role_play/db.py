@@ -27,6 +27,36 @@ class CaseFileModel(Base):
     accusation: Column | str = Column(Text(EMBED_FIELD_VALUE_LENGTH), nullable=False)
 
     @staticmethod
+    def preview(
+        author: int,
+        status: int,
+        judge: int,
+        lay_judge: int | None,
+        complainant: int,
+        complainant_lawyer: int | None,
+        defendant: int,
+        defendant_lawyer: int | None,
+        witness: int | None,
+        expert: int | None,
+        accusation: str,
+    ) -> "CaseFileModel":
+        return CaseFileModel(
+            author=author,
+            created=(utcnow := datetime.utcnow()),
+            last_edited=utcnow,
+            status=status,
+            judge=judge,
+            lay_judge=lay_judge,
+            complainant=complainant,
+            complainant_lawyer=complainant_lawyer,
+            defendant=defendant,
+            defendant_lawyer=defendant_lawyer,
+            witness=witness,
+            expert=expert,
+            accusation=accusation,
+        )
+
+    @staticmethod
     async def create(
         author: int,
         status: int,
@@ -40,23 +70,7 @@ class CaseFileModel(Base):
         expert: int | None,
         accusation: str,
     ) -> "CaseFileModel":
-        return await db.add(
-            CaseFileModel(
-                author=author,
-                created=(utcnow := datetime.utcnow()),
-                last_edited=utcnow,
-                status=status,
-                judge=judge,
-                lay_judge=lay_judge,
-                complainant=complainant,
-                complainant_lawyer=complainant_lawyer,
-                defendant=defendant,
-                defendant_lawyer=defendant_lawyer,
-                witness=witness,
-                expert=expert,
-                accusation=accusation,
-            )
-        )
+        return await db.add(CaseFileModel.preview(**locals()))
 
     @staticmethod
     async def get_by_id(id: int) -> "CaseFileModel | None":  # noqa A002

@@ -2,7 +2,16 @@ __all__ = ("CaseFile",)
 
 
 from AlbertoX3 import get_logger, Extension, t, TranslationNamespace
-from naff import Embed, EmbedField, InteractionContext, slash_command, SlashCommandOption, OptionTypes
+from naff import (
+    Embed,
+    EmbedField,
+    InteractionContext,
+    slash_command,
+    SlashCommandOption,
+    OptionTypes,
+    BaseUser,
+    MISSING,
+)
 from .colors import Colors
 from .db import CaseFileModel
 
@@ -52,7 +61,7 @@ class CaseFile(Extension):
     async def cf_id(self, ctx: InteractionContext, id: int):  # noqa A002
         case = await CaseFileModel.get_by_id(id)
         if case is not None:
-            title = t.last_recent_title(id=case.id)
+            title = t.title(id=case.id)
             embed = self.get_case_embed(title, case)
         else:
             embed = Embed(
@@ -61,6 +70,51 @@ class CaseFile(Extension):
                 color=Colors.case_file,
             )
         await ctx.send(embeds=[embed])
+
+    @cf_about.subcommand(
+        sub_cmd_name="create",
+        sub_cmd_description="Create a new *Case File*",
+        options=[
+            SlashCommandOption(name="judge", type=OptionTypes.USER, required=True),
+            SlashCommandOption(name="complainant", type=OptionTypes.USER, required=True),
+            SlashCommandOption(name="defendant", type=OptionTypes.USER, required=True),
+            SlashCommandOption(name="lay_judge", type=OptionTypes.USER, required=False),
+            SlashCommandOption(name="complainant_lawyer", type=OptionTypes.USER, required=False),
+            SlashCommandOption(name="defendant_lawyer", type=OptionTypes.USER, required=False),
+            SlashCommandOption(name="witness", type=OptionTypes.USER, required=False),
+            SlashCommandOption(name="expert", type=OptionTypes.USER, required=False),
+        ],
+    )
+    async def cf_create(
+        self,
+        ctx: InteractionContext,
+        judge: BaseUser,
+        complainant: BaseUser,
+        defendant: BaseUser,
+        lay_judge: BaseUser = MISSING,
+        complainant_lawyer: BaseUser = MISSING,
+        defendant_lawyer: BaseUser = MISSING,
+        witness: BaseUser = MISSING,
+        expert: BaseUser = MISSING,
+    ):
+        # ToDo: add dialog to retrieve accusation...
+        case_kwargs = {
+            "author": ctx.author.id,
+            "status": 0,
+            "judge": judge.id,
+            "lay_judge": lay_judge.id,
+            "complainant": complainant.id,
+            "complainant_lawyer": complainant_lawyer.id,
+            "defendant": defendant.id,
+            "defendant_lawyer": defendant_lawyer.id,
+            "witness": witness.id,
+            "expert": expert.id,
+            "accusation": "Coming soon:tm:",
+        }
+        preview = CaseFileModel.preview(**case_kwargs)
+        preview.id = 0
+        await ctx.send("Preview:", embeds=[self.get_case_embed(t.title(id=preview.id), preview)])
+        # ToDo: let author verify Case File and then add it to database
 
     @staticmethod
     def get_case_embed(title: str, case: CaseFileModel) -> Embed:
