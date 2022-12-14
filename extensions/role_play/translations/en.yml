@@ -1,4 +1,12 @@
 file_case:
+  about:
+    title: "File Case"
+    description: "
+      *File Case* is a system within AlbertoX3 that allows you to
+      hold court hearings and talk things out in role-playing games.
+
+      *Please do not take it too seriously*
+      "
   title: "File Case #{id}"
   last_recent_title: "Last recent updated File Case: #{id}"
   description: "
@@ -52,3 +60,7 @@ file_case:
     open: "Open 🔓"
     active: "Active ⚖"
     closed: "Closed 🔒"
+  not_found:
+    by_id:
+      title: "File Case #{id} not found"
+      description: "Couldn't find any record of the *File Case* #{id}"

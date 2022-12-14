@@ -2,7 +2,7 @@ __all__ = ("FileCase",)
 
 
 from AlbertoX3 import get_logger, Extension, t, TranslationNamespace
-from naff import Embed, EmbedField, InteractionContext, slash_command
+from naff import Embed, EmbedField, InteractionContext, slash_command, SlashCommandOption, OptionTypes
 from .colors import Colors
 from .db import FileCaseModel
 
@@ -22,12 +22,44 @@ _CASE_STATUS: dict[int, str] = {
 class FileCase(Extension):
     @slash_command(
         "file-case",
-        description="Basic information about *File Case*",
+        sub_cmd_name="about",
+        sub_cmd_description="Basic information about *File Case*",
     )
-    async def fc_info(self, ctx: InteractionContext):
+    async def fc_about(self, ctx: InteractionContext):
+        embed = Embed(title=t.about.title, description=t.about.description.replace("\n", "\n\n"))
+        await ctx.send(embeds=[embed])
+
+    @fc_about.subcommand(sub_cmd_name="latest", sub_cmd_description="Get the latest *File Case*")
+    async def fc_latest(self, ctx: InteractionContext):
         case = await FileCaseModel.get_last_recent_updated()
         title = t.last_recent_title(id=case.id)
         embed = self.get_case_embed(title, case)
+        await ctx.send(embeds=[embed])
+
+    @fc_about.subcommand(
+        sub_cmd_name="by-id",
+        sub_cmd_description="Get a *File Case* by ID",
+        options=[
+            SlashCommandOption(
+                name="id",
+                type=OptionTypes.INTEGER,
+                description="The ID from the *File Case*",
+                required=True,
+                min_value=1,
+            )
+        ],
+    )
+    async def fc_id(self, ctx: InteractionContext, id: int):  # noqa A002
+        case = await FileCaseModel.get_by_id(id)
+        if case is not None:
+            title = t.last_recent_title(id=case.id)
+            embed = self.get_case_embed(title, case)
+        else:
+            embed = Embed(
+                title=t.not_found.by_id.title(id=id),
+                description=t.not_found.by_id.description(id=id),
+                color=Colors.file_case,
+            )
         await ctx.send(embeds=[embed])
 
     @staticmethod
