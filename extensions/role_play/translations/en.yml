@@ -64,3 +64,7 @@ case_file:
     by_id:
       title: "Case file #{id} not found"
       description: "Couldn't find any record of the *Case file* #{id}"
+  modal:
+    title: "Case File"
+    accusation: "Accusation"
+    placeholder: "Write your accusation here..."

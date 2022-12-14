@@ -11,6 +11,11 @@ from naff import (
     OptionTypes,
     BaseUser,
     MISSING,
+    ModalContext,
+    Modal,
+    ParagraphText,
+    EMBED_FIELD_VALUE_LENGTH,
+    Client,
 )
 from .colors import Colors
 from .db import CaseFileModel
@@ -29,6 +34,9 @@ _CASE_STATUS: dict[int, str] = {
 
 
 class CaseFile(Extension):
+    def __init__(self, bot: Client):
+        self.cf_accusation_cache: dict[int, str] = {}
+
     @slash_command(
         "case-file",
         sub_cmd_name="about",
@@ -97,7 +105,27 @@ class CaseFile(Extension):
         witness: BaseUser = MISSING,
         expert: BaseUser = MISSING,
     ):
-        # ToDo: add dialog to retrieve accusation...
+        old_accusation = self.cf_accusation_cache.get(ctx.author.id, MISSING)
+
+        modal = Modal(
+            title=t.modal.title,
+            components=[
+                ParagraphText(
+                    label=t.modal.accusation,
+                    custom_id="accusation",
+                    placeholder=t.modal.placeholder,
+                    value=old_accusation,
+                    required=True,
+                    max_length=EMBED_FIELD_VALUE_LENGTH,
+                )
+            ],
+        )
+        await ctx.send_modal(modal)
+        m_ctx: ModalContext = await self.bot.wait_for_modal(modal, ctx.author)
+        await m_ctx.defer()
+
+        accusation = m_ctx.kwargs["accusation"]
+        self.cf_accusation_cache[ctx.author.id] = accusation
         case_kwargs = {
             "author": ctx.author.id,
             "status": 0,
@@ -109,7 +137,7 @@ class CaseFile(Extension):
             "defendant_lawyer": defendant_lawyer.id,
             "witness": witness.id,
             "expert": expert.id,
-            "accusation": "Coming soon:tm:",
+            "accusation": accusation,
         }
         preview = CaseFileModel.preview(**case_kwargs)
         preview.id = 0
