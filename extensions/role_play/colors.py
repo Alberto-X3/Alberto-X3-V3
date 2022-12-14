@@ -5,4 +5,4 @@ from AlbertoX3 import AllColors
 
 
 class Colors(AllColors):
-    file_case = AllColors.brown[300]
+    case_file = AllColors.brown[300]

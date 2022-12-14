@@ -2,11 +2,11 @@ __all__ = ("RolePlay",)
 
 
 from AlbertoX3 import get_logger, Extension
-from .file_case import FileCase
+from .case_file import CaseFile
 
 
 logger = get_logger(__name__)
 
 
-class RolePlay(FileCase, baseclass=Extension):
+class RolePlay(CaseFile, baseclass=Extension):
     ...

@@ -1,4 +1,4 @@
-__all__ = ("FileCaseModel",)
+__all__ = ("CaseFileModel",)
 
 
 from AlbertoX3.constants import MISSING
@@ -8,8 +8,8 @@ from naff.client.const import EMBED_FIELD_VALUE_LENGTH
 from sqlalchemy import Column, Integer, BigInteger, Text, func
 
 
-class FileCaseModel(Base):
-    __tablename__ = "file_case"
+class CaseFileModel(Base):
+    __tablename__ = "case_file"
 
     id: Column | int = Column(Integer, primary_key=True, unique=True, autoincrement=True, nullable=False)
     author: Column | int = Column(BigInteger, nullable=False)
@@ -39,9 +39,9 @@ class FileCaseModel(Base):
         witness: int | None,
         expert: int | None,
         accusation: str,
-    ) -> "FileCaseModel":
+    ) -> "CaseFileModel":
         return await db.add(
-            FileCaseModel(
+            CaseFileModel(
                 author=author,
                 created=(utcnow := datetime.utcnow()),
                 last_edited=utcnow,
@@ -59,12 +59,12 @@ class FileCaseModel(Base):
         )
 
     @staticmethod
-    async def get_by_id(id: int) -> "FileCaseModel | None":  # noqa A002
-        return await db.get(FileCaseModel, id=id)
+    async def get_by_id(id: int) -> "CaseFileModel | None":  # noqa A002
+        return await db.get(CaseFileModel, id=id)
 
     @staticmethod
-    async def get_last_recent_updated() -> "FileCaseModel":
-        return await db.get(FileCaseModel, FileCaseModel.last_edited == func.max(FileCaseModel.last_edited))
+    async def get_last_recent_updated() -> "CaseFileModel":
+        return await db.get(CaseFileModel, CaseFileModel.last_edited == func.max(CaseFileModel.last_edited))
 
     async def edit(
         self,
@@ -79,7 +79,7 @@ class FileCaseModel(Base):
         witness: int | None = MISSING,
         expert: int | None = MISSING,
         accusation: str = MISSING,
-    ) -> "FileCaseModel":
+    ) -> "CaseFileModel":
         args = locals()
         args.pop("self")
 

@@ -1,6 +1,6 @@
-file_case:
-  title: "Aktenfall #{id}"
-  last_recent_title: "Zuletzt aktualisierter Aktenfall: #{id}"
+case_file:
+  title: "Fallakte #{id}"
+  last_recent_title: "Zuletzt aktualisierter Fallakte: #{id}"
   description: "
     Status: **{status}**
 

@@ -1,15 +1,15 @@
-__all__ = ("FileCase",)
+__all__ = ("CaseFile",)
 
 
 from AlbertoX3 import get_logger, Extension, t, TranslationNamespace
 from naff import Embed, EmbedField, InteractionContext, slash_command, SlashCommandOption, OptionTypes
 from .colors import Colors
-from .db import FileCaseModel
+from .db import CaseFileModel
 
 
 logger = get_logger(__name__)
 tg: TranslationNamespace = t.g
-t: TranslationNamespace = t.role_play.file_case  # real type: TranslationDict
+t: TranslationNamespace = t.role_play.case_file  # real type: TranslationDict
 
 
 _CASE_STATUS: dict[int, str] = {
@@ -19,38 +19,38 @@ _CASE_STATUS: dict[int, str] = {
 }
 
 
-class FileCase(Extension):
+class CaseFile(Extension):
     @slash_command(
-        "file-case",
+        "case-file",
         sub_cmd_name="about",
-        sub_cmd_description="Basic information about *File Case*",
+        sub_cmd_description="Basic information about *Case File*",
     )
-    async def fc_about(self, ctx: InteractionContext):
+    async def cf_about(self, ctx: InteractionContext):
         embed = Embed(title=t.about.title, description=t.about.description.replace("\n", "\n\n"))
         await ctx.send(embeds=[embed])
 
-    @fc_about.subcommand(sub_cmd_name="latest", sub_cmd_description="Get the latest *File Case*")
-    async def fc_latest(self, ctx: InteractionContext):
-        case = await FileCaseModel.get_last_recent_updated()
+    @cf_about.subcommand(sub_cmd_name="latest", sub_cmd_description="Get the latest *Case file*")
+    async def cf_latest(self, ctx: InteractionContext):
+        case = await CaseFileModel.get_last_recent_updated()
         title = t.last_recent_title(id=case.id)
         embed = self.get_case_embed(title, case)
         await ctx.send(embeds=[embed])
 
-    @fc_about.subcommand(
+    @cf_about.subcommand(
         sub_cmd_name="by-id",
-        sub_cmd_description="Get a *File Case* by ID",
+        sub_cmd_description="Get a *Case file* by ID",
         options=[
             SlashCommandOption(
                 name="id",
                 type=OptionTypes.INTEGER,
-                description="The ID from the *File Case*",
+                description="The ID from the *Case file*",
                 required=True,
                 min_value=1,
             )
         ],
     )
-    async def fc_id(self, ctx: InteractionContext, id: int):  # noqa A002
-        case = await FileCaseModel.get_by_id(id)
+    async def cf_id(self, ctx: InteractionContext, id: int):  # noqa A002
+        case = await CaseFileModel.get_by_id(id)
         if case is not None:
             title = t.last_recent_title(id=case.id)
             embed = self.get_case_embed(title, case)
@@ -58,12 +58,12 @@ class FileCase(Extension):
             embed = Embed(
                 title=t.not_found.by_id.title(id=id),
                 description=t.not_found.by_id.description(id=id),
-                color=Colors.file_case,
+                color=Colors.case_file,
             )
         await ctx.send(embeds=[embed])
 
     @staticmethod
-    def get_case_embed(title: str, case: FileCaseModel) -> Embed:
+    def get_case_embed(title: str, case: CaseFileModel) -> Embed:
         return Embed(
             title=title,
             description=t.description(
@@ -132,5 +132,5 @@ class FileCase(Extension):
                     inline=False,
                 ),
             ],
-            color=Colors.file_case,
+            color=Colors.case_file,
         )
