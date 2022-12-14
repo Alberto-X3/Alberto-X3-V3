@@ -1,0 +1,23 @@
+file_case:
+  title: "File Case #{id}"
+  last_recent_title: "Last recent updated File Case: #{id}"
+  description: "
+    Created: <t:{created}:f>
+
+    Last Edited: <t:{last_edited}:f>
+
+    Author: <@{author}> ({author})
+    "
+  case:
+    judge:
+      name: "Judge"
+      value: "<@{judge}> ({judge})"
+    complainant:
+      name: "Complainant"
+      value: "<@{complainant}> ({complainant})"
+    defendant:
+      name: "Defendant"
+      value: "<@{defendant}> ({defendant})"
+    appeal:
+      name: "Appeal"
+      value: "*{appeal}*"
