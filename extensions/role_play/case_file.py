@@ -16,6 +16,9 @@ from naff import (
     ParagraphText,
     EMBED_FIELD_VALUE_LENGTH,
     Client,
+    ActionRow,
+    Button,
+    ButtonStyles,
 )
 from .colors import Colors
 from .db import CaseFileModel
@@ -109,6 +112,7 @@ class CaseFile(Extension):
 
         modal = Modal(
             title=t.modal.title,
+            custom_id="case.create|accusation",
             components=[
                 ParagraphText(
                     label=t.modal.accusation,
@@ -126,6 +130,8 @@ class CaseFile(Extension):
 
         accusation = m_ctx.kwargs["accusation"]
         self.cf_accusation_cache[ctx.author.id] = accusation
+        await ctx.send(content="```{}```".format(accusation.replace("```", "\u200b``\u200b`")))
+
         case_kwargs = {
             "author": ctx.author.id,
             "status": 0,
@@ -141,8 +147,33 @@ class CaseFile(Extension):
         }
         preview = CaseFileModel.preview(**case_kwargs)
         preview.id = 0
-        await ctx.send("Preview:", embeds=[self.get_case_embed(t.title(id=preview.id), preview)])
-        # ToDo: let author verify Case File and then add it to database
+
+        components = ActionRow(
+            Button(style=ButtonStyles.SUCCESS, label=t.buttons.looks_okay, custom_id="case.create|yes"),
+            Button(style=ButtonStyles.DANGER, label=t.buttons.cancel, custom_id="case.create|no"),
+        )
+        embed = self.get_case_embed(t.title(id=preview.id), preview)
+
+        msg = await ctx.send(embeds=[embed], components=[components])
+        c_ctx = (
+            await self.bot.wait_for_component(
+                messages=[msg],
+                components=[components],
+                check=lambda event: event.ctx.author.id == ctx.author.id,
+            )
+        ).ctx
+        await c_ctx.defer(edit_origin=True)
+
+        if c_ctx.custom_id == "case.create|yes":
+            case = await CaseFileModel.create(**case_kwargs)
+            embed = self.get_case_embed(t.title(id=case.id), case)
+            components = []
+        else:
+            for c in components.components:
+                c.disabled = True
+            components = [components]
+
+        await c_ctx.edit(msg, embeds=[embed], components=components)
 
     @staticmethod
     def get_case_embed(title: str, case: CaseFileModel) -> Embed:

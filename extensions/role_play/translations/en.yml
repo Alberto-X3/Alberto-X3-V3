@@ -68,3 +68,6 @@ case_file:
     title: "Case File"
     accusation: "Accusation"
     placeholder: "Write your accusation here..."
+  buttons:
+    looks_okay: "Looks okay"
+    cancel: "Cancel"

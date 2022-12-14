@@ -78,7 +78,8 @@ class CaseFileModel(Base):
 
     @staticmethod
     async def get_last_recent_updated() -> "CaseFileModel":
-        return await db.get(CaseFileModel, CaseFileModel.last_edited == func.max(CaseFileModel.last_edited))
+        last_edited = await db.get(func.max(CaseFileModel.last_edited))
+        return await db.get(CaseFileModel, last_edited=last_edited)
 
     async def edit(
         self,
