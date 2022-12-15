@@ -15,5 +15,6 @@ from .environment import *
 from .errors import *
 from .misc import *
 from .naff_wrapper import *
+from .permission import *
 from .translations import *
 from .utils import *

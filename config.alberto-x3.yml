@@ -23,3 +23,36 @@ tmp:
   remove:
     auto: true
     on_startup: true
+
+permission_levels:
+  administrator:
+    name: Administrator
+    level: 4
+    aliases: [administrator, admin, a]
+    if:
+      permissions: [administrator]
+      roles: [admin]
+
+  moderator:
+    name: Moderator
+    level: 3
+    aliases: [moderator, mod, m]
+    if:
+      roles: [mod]
+
+  supporter:
+    name: Supporter
+    level: 2
+    aliases: [supporter, sup, s]
+    if:
+      roles: [sup]
+
+  team:
+    name: Team
+    level: 1
+    aliases: [team, t]
+    if:
+      roles: [team]
+
+team_permission_level: team
+default_permission_level: administrator

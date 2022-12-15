@@ -6,11 +6,17 @@ __all__ = (
 )
 
 
-from naff import Missing, Absent
+from functools import partial
+from naff import Member, Missing, Absent, User
 from pathlib import Path
 from yaml import safe_load
 from .contributors import Contributor
+from .errors import InvalidPermissionLevelError
 from .misc import FormatStr, PrimitiveExtension
+
+if __import__("typing").TYPE_CHECKING:
+    # needed for type hinting and to avoid circular imports
+    from .permission import BasePermissionLevel, PermissionLevel
 
 
 LIB_PATH: Path = Path(__file__).parent
@@ -58,6 +64,11 @@ class Config:
     AUTO_MINUTE: Absent[int] = MISSING
     AUTO_SECOND: Absent[int] = MISSING
     AUTO_CHANNEL: Absent[int] = MISSING
+    # permission
+    PERMISSION_DEFAULT_OVERRIDES: Absent[dict[str, dict[str, "BasePermissionLevel"]]] = MISSING
+    PERMISSION_DEFAULT_LEVEL: Absent[int] = MISSING
+    PERMISSION_LEVELS: Absent[type["BasePermissionLevel"]] = MISSING
+    PERMISSION_LEVEL_TEAM: Absent["PermissionLevel"] = MISSING
 
     def __new__(cls, path: Path):
         # due to circular imports
@@ -111,10 +122,20 @@ class Config:
         cls.TMP_REMOVE_AUTO = get_bool(tmp.get("remove", {}).get("auto", True))
         cls.TMP_REMOVE_ON_STARTUP = get_bool(tmp.get("remove", {}).get("on_startup", True))
 
+        # auto
         cls.AUTO_HOUR = 0
         cls.AUTO_MINUTE = 0
         cls.AUTO_SECOND = 0
         cls.AUTO_CHANNEL = 822589081337724939
+
+        # permission
+        cls.PERMISSION_DEFAULT_OVERRIDES = {}  # will be further modified in next line
+        cls.__load_permission(
+            permission_levels_raw=config.get("permission_levels", {}),
+            permission_level_team_raw=config.get("team_permission_level", "public"),
+            permission_level_default_raw=config.get("default_permission_level", "owner"),
+            permission_default_overrides_raw=config.get("default_permission_overrides", {}),
+        )  # a bit more logic is needed to load the config
 
         # getting the instance
         if not cls._instance:
@@ -124,6 +145,76 @@ class Config:
             self = cls._instance[0]
 
         return self
+
+    @classmethod
+    def __load_permission(
+        cls,
+        permission_levels_raw: dict,
+        permission_level_team_raw: str,
+        permission_level_default_raw: str,
+        permission_default_overrides_raw: dict[str, dict[str, str]],
+    ):  # noqa ANN206
+        from .permission import BasePermissionLevel, PermissionLevel
+
+        permission_levels: dict[str, PermissionLevel] = {
+            "public": PermissionLevel(0, ["public", "p"], "Public", [], [])
+        }
+
+        for k, v in permission_levels_raw.items():
+            if (level := v["level"]) <= 0:
+                raise InvalidPermissionLevelError(level=level)
+
+            permission_levels[k] = PermissionLevel(
+                level=level,
+                aliases=v["aliases"],
+                description=v["name"],
+                guild_permissions=v["if"].get("permissions", []),
+                roles=v["if"].get("roles", []),
+            )
+
+        owner_level = max(([pl.level for pl in permission_levels.values()]), default=0) + 1
+        permission_levels["owner"] = PermissionLevel(
+            level=owner_level, aliases=["owner"], description="Owner", guild_permissions=[], roles=[]
+        )
+
+        permission_levels = {
+            k.upper(): v for k, v in sorted(permission_levels.items(), key=lambda pl: pl[1].level, reverse=True)
+        }
+        cls.PERMISSION_LEVELS = BasePermissionLevel("PermissionLevel", permission_levels)
+        cls.PERMISSION_LEVELS._get_permission_level = classmethod(partial(_get_permission_level, permission_levels))
+
+        cls.PERMISSION_LEVEL_TEAM = getattr(Config.PERMISSION_LEVELS, permission_level_team_raw.upper())
+        cls.PERMISSION_DEFAULT_LEVEL = getattr(Config.PERMISSION_LEVELS, permission_level_default_raw.upper())
+
+        for ext, overrides in permission_default_overrides_raw.items():
+            for permission, level in overrides.items():
+                cls.PERMISSION_DEFAULT_OVERRIDES.setdefault(ext.lower(), {}).setdefault(
+                    permission.lower(), getattr(cls.PERMISSION_LEVELS, level.upper())
+                )
+
+
+async def _get_permission_level(
+    permission_levels: dict[str, "PermissionLevel"], cls: "BasePermissionLevel", member: User | Member
+) -> "BasePermissionLevel":
+    if isinstance(member, User):
+        return cls.PUBLIC
+
+    roles = {role.id for role in member.roles}  # noqa F841
+
+    async def has_role(role_name: str) -> bool:
+        # ToDo: implement RoleSettings
+        # return await RoleSettings.get(role_name) in roles
+        return False
+
+    for k, v in permission_levels.items():
+        if any(getattr(member.guild_permissions, p) for p in v.guild_permissions):
+            return getattr(cls, k.upper())
+
+        for r in v.roles:
+            if await has_role(r):
+                return getattr(cls, k.upper())
+
+    return cls.PUBLIC
 
 
 class StyleConfig:
