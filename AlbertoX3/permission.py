@@ -3,6 +3,8 @@ __all__ = (
     "PermissionModel",
     "BasePermission",
     "BasePermissionLevel",
+    "PermissionLevel",
+    "check_permission_level",
 )
 
 
@@ -70,14 +72,13 @@ class BasePermission(Enum):
     def _default_level(self) -> "BasePermissionLevel":
         from .constants import Config
 
-        # get default level from overrides or use the global default
-        return Config.DEFAULT_PERMISSION_OVERRIDES.get(self.cog, {}).get(self.name, Config.DEFAULT_PERMISSION_LEVEL)
+        return Config.PERMISSION_DEFAULT_OVERRIDES.get(self.ext, {}).get(self.name, Config.PERMISSION_DEFAULT_LEVEL)
 
     async def resolve(self) -> "BasePermissionLevel":
         from .constants import Config
 
         value: int = await PermissionModel.get(self.fullname, self._default_level.level)
-        for level in Config.PERMISSION_LEVELS:
+        for level in Config.PERMISSION_LEVELS:  # type: ignore
             if level.level == value:
                 return level
         raise UnrecognisedPermissionLevelError(level=value)
