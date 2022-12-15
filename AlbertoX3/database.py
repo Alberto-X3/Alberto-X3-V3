@@ -212,10 +212,12 @@ class DB:
 
     async def add(self, obj: T) -> T:
         self.session.add(obj)
+        await self.commit()
         return obj
 
     async def delete(self, obj: T) -> T:
         await self.session.delete(obj)
+        await self.commit()
         return obj
 
     async def exec(self, statement: Executable, *args: Any, **kwargs: Any) -> Any:  # noqa: A003
