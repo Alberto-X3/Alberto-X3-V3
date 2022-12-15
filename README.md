@@ -6,7 +6,7 @@
 
 <p align="center">
 <a href="https://github.com/Alberto-X3/Alberto-X3-V3/actions/workflows/codeql-analysis.yml">
-<img src="https://img.shields.io/github/workflow/status/Alberto-X3/Alberto-X3-V3/CodeQL/develop?label=CodeQL&logo=Github" alt="[CodeQL]"></a>
+<img src="https://img.shields.io/github/actions/workflow/status/Alberto-X3/Alberto-X3-V3/codeql-analysis.yml?branch=develop&label=CodeQL&logo=Github" alt="[CodeQL]"></a>
 <a href="https://results.pre-commit.ci/latest/github/Alberto-X3/Alberto-X3-V3/develop">
 <img src="https://results.pre-commit.ci/badge/github/Alberto-X3/Alberto-X3-V3/develop.svg" alt="[pre-commit.ci Status]"></a>
 </p>
