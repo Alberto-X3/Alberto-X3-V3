@@ -2,6 +2,7 @@ __all__ = (
     "AlbertoX3Error",
     "DeveloperError",
     "DeveloperArgumentError",
+    "UnrecognisedPermissionLevelError",
     "GatherAnyError",
     "UnrecognisedBooleanError",
     "TranslationError",
@@ -25,6 +26,16 @@ class DeveloperError(AlbertoX3Error):
 
 class DeveloperArgumentError(DeveloperError):
     pass
+
+
+class UnrecognisedPermissionLevelError(DeveloperArgumentError, ValueError):
+    level: int
+
+    def __init__(self, level: int):
+        self.level = level
+
+    def __str__(self) -> str:
+        return f"Permission level {self.level} not found!"
 
 
 class GatherAnyError(AlbertoX3Error):

@@ -12,6 +12,10 @@ from yaml import safe_load
 from .contributors import Contributor
 from .misc import FormatStr, PrimitiveExtension
 
+if __import__("typing").TYPE_CHECKING:
+    # needed for type hinting and to avoid circular imports
+    from .permission import BasePermissionLevel
+
 
 LIB_PATH: Path = Path(__file__).parent
 MISSING: Missing = Missing()
@@ -58,9 +62,14 @@ class Config:
     AUTO_MINUTE: Absent[int] = MISSING
     AUTO_SECOND: Absent[int] = MISSING
     AUTO_CHANNEL: Absent[int] = MISSING
+    # permission
+    DEFAULT_PERMISSION_OVERRIDES: Absent[dict] = {}
+    DEFAULT_PERMISSION_LEVEL: Absent[int] = 0
+    PERMISSION_LEVELS: Absent[list["BasePermissionLevel"]] = []
 
     def __new__(cls, path: Path):
         # due to circular imports
+        from .permission import BasePermissionLevel  # noqa  # will be used in a following commit
         from .utils import get_bool, get_lib_version, get_extensions
 
         config: dict[str, ...] = safe_load(path.read_text("utf-8"))
