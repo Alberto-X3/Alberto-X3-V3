@@ -22,6 +22,7 @@ from naff import (
 )
 from .colors import Colors
 from .db import CaseFileModel
+from .permission import RolePlayPermission
 
 
 logger = get_logger(__name__)
@@ -50,6 +51,7 @@ class CaseFile(Extension):
         await ctx.send(embeds=[embed])
 
     @cf_about.subcommand(sub_cmd_name="latest", sub_cmd_description="Get the latest *Case file*")
+    @RolePlayPermission.cf_view.check
     async def cf_latest(self, ctx: InteractionContext):
         case = await CaseFileModel.get_last_recent_updated()
         title = t.last_recent_title(id=case.id)
@@ -69,6 +71,7 @@ class CaseFile(Extension):
             )
         ],
     )
+    @RolePlayPermission.cf_view.check
     async def cf_id(self, ctx: InteractionContext, id: int):  # noqa A002
         case = await CaseFileModel.get_by_id(id)
         if case is not None:
@@ -96,6 +99,7 @@ class CaseFile(Extension):
             SlashCommandOption(name="expert", type=OptionTypes.USER, required=False),
         ],
     )
+    @RolePlayPermission.cf_create.check
     async def cf_create(
         self,
         ctx: InteractionContext,

@@ -60,9 +60,9 @@ class PrimitiveExtension:
         return self._has(2)
 
     @property
-    def has_permissions(self) -> bool:
+    def has_permission(self) -> bool:
         """
-        Whether it features a permissions.py-file or not.
+        Whether it features a permission.py-file or not.
         """
         return self._has(3)
 

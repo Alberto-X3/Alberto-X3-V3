@@ -56,3 +56,11 @@ permission_levels:
 
 team_permission_level: team
 default_permission_level: administrator
+
+default_permission_overrides:
+
+  role_play:
+    cf_view: public
+    cf_create: public
+    cf_edit: moderator
+    cf_delete: administrator

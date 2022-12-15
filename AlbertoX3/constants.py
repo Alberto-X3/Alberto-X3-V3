@@ -187,8 +187,8 @@ class Config:
             partial(_get_permission_level, permission_levels, RoleSettings.get)
         )
 
-        cls.PERMISSION_LEVEL_TEAM = getattr(Config.PERMISSION_LEVELS, permission_level_team_raw.upper())
-        cls.PERMISSION_DEFAULT_LEVEL = getattr(Config.PERMISSION_LEVELS, permission_level_default_raw.upper())
+        cls.PERMISSION_LEVEL_TEAM = getattr(cls.PERMISSION_LEVELS, permission_level_team_raw.upper())
+        cls.PERMISSION_DEFAULT_LEVEL = getattr(cls.PERMISSION_LEVELS, permission_level_default_raw.upper())
 
         for ext, overrides in permission_default_overrides_raw.items():
             for permission, level in overrides.items():
@@ -212,7 +212,7 @@ async def _get_permission_level(
         return await get_role_setting(role_name) in roles
 
     for k, v in permission_levels.items():
-        if any(getattr(member.guild_permissions, p) for p in v.guild_permissions):
+        if any(getattr(member.guild_permissions, p.upper()) for p in v.guild_permissions):
             return getattr(cls, k.upper())
 
         for r in v.roles:
