@@ -9,12 +9,13 @@ __all__ = (
 from functools import partial
 from naff import Member, Missing, Absent, User
 from pathlib import Path
+from typing import TYPE_CHECKING, Callable, Awaitable, NoReturn
 from yaml import safe_load
 from .contributors import Contributor
 from .errors import InvalidPermissionLevelError
 from .misc import FormatStr, PrimitiveExtension
 
-if __import__("typing").TYPE_CHECKING:
+if TYPE_CHECKING:
     # needed for type hinting and to avoid circular imports
     from .permission import BasePermissionLevel, PermissionLevel
 
@@ -153,8 +154,9 @@ class Config:
         permission_level_team_raw: str,
         permission_level_default_raw: str,
         permission_default_overrides_raw: dict[str, dict[str, str]],
-    ):  # noqa ANN206
+    ) -> NoReturn:
         from .permission import BasePermissionLevel, PermissionLevel
+        from .settings import RoleSettings
 
         permission_levels: dict[str, PermissionLevel] = {
             "public": PermissionLevel(0, ["public", "p"], "Public", [], [])
@@ -181,7 +183,9 @@ class Config:
             k.upper(): v for k, v in sorted(permission_levels.items(), key=lambda pl: pl[1].level, reverse=True)
         }
         cls.PERMISSION_LEVELS = BasePermissionLevel("PermissionLevel", permission_levels)
-        cls.PERMISSION_LEVELS._get_permission_level = classmethod(partial(_get_permission_level, permission_levels))
+        cls.PERMISSION_LEVELS._get_permission_level = classmethod(
+            partial(_get_permission_level, permission_levels, RoleSettings.get)
+        )
 
         cls.PERMISSION_LEVEL_TEAM = getattr(Config.PERMISSION_LEVELS, permission_level_team_raw.upper())
         cls.PERMISSION_DEFAULT_LEVEL = getattr(Config.PERMISSION_LEVELS, permission_level_default_raw.upper())
@@ -194,17 +198,18 @@ class Config:
 
 
 async def _get_permission_level(
-    permission_levels: dict[str, "PermissionLevel"], cls: "BasePermissionLevel", member: User | Member
+    permission_levels: dict[str, "PermissionLevel"],
+    get_role_setting: Callable[[str], Awaitable[int]],  # is AlbertoX3.settings.RoleSettings.get
+    cls: "BasePermissionLevel",
+    member: User | Member,
 ) -> "BasePermissionLevel":
     if isinstance(member, User):
         return cls.PUBLIC
 
-    roles = {role.id for role in member.roles}  # noqa F841
+    roles = {role.id for role in member.roles}
 
     async def has_role(role_name: str) -> bool:
-        # ToDo: implement RoleSettings
-        # return await RoleSettings.get(role_name) in roles
-        return False
+        return await get_role_setting(role_name) in roles
 
     for k, v in permission_levels.items():
         if any(getattr(member.guild_permissions, p) for p in v.guild_permissions):
