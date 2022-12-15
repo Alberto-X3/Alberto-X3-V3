@@ -11,7 +11,7 @@ from aenum import Enum
 from collections import namedtuple
 from contextvars import ContextVar
 from naff import Context, BaseUser, check
-from sqlalchemy import Column, Integer, Text
+from sqlalchemy import Column, Integer, String
 from typing import Callable, Awaitable, NoReturn
 from .database import Base, db, redis
 from .environment import CACHE_TTL
@@ -24,7 +24,7 @@ permission_override: ContextVar["BasePermissionLevel"] = ContextVar("permission_
 class PermissionModel(Base):
     __tablename__ = "permissions"
 
-    permission: str | Column = Column(Text(64), primary_key=True, unique=True, nullable=False)
+    permission: str | Column = Column(String(64), primary_key=True, unique=True, nullable=False)
     level: int | Column = Column(Integer, nullable=False)
 
     @staticmethod
