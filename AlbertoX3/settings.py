@@ -1,4 +1,8 @@
-__all__ = ()
+__all__ = (
+    "SettingsModel",
+    "Settings",
+    "RoleSettings",
+)
 
 
 import sys
