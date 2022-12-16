@@ -1,4 +1,4 @@
-case_file:
+cf:
   title: "Fallakte #{id}"
   last_recent_title: "Zuletzt aktualisierter Fallakte: #{id}"
   description: "

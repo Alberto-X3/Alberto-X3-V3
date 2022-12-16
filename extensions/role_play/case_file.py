@@ -27,7 +27,7 @@ from .permission import RolePlayPermission
 
 logger = get_logger(__name__)
 tg: TranslationNamespace = t.g
-t: TranslationNamespace = t.role_play.case_file  # real type: TranslationDict
+t: TranslationNamespace = t.role_play
 
 
 _CASE_STATUS: dict[int, str] = {
@@ -47,14 +47,14 @@ class CaseFile(Extension):
         sub_cmd_description="Basic information about *Case File*",
     )
     async def cf_about(self, ctx: InteractionContext):
-        embed = Embed(title=t.about.title, description=t.about.description.replace("\n", "\n\n"))
+        embed = Embed(title=t.cf.about.title, description=t.cf.about.description.replace("\n", "\n\n"))
         await ctx.send(embeds=[embed])
 
     @cf_about.subcommand(sub_cmd_name="latest", sub_cmd_description="Get the latest *Case file*")
     @RolePlayPermission.cf_view.check
     async def cf_latest(self, ctx: InteractionContext):
         case = await CaseFileModel.get_last_recent_updated()
-        title = t.last_recent_title(id=case.id)
+        title = t.cf.last_recent_title(id=case.id)
         embed = self.get_case_embed(title, case)
         await ctx.send(embeds=[embed])
 
@@ -75,12 +75,12 @@ class CaseFile(Extension):
     async def cf_id(self, ctx: InteractionContext, id: int):  # noqa A002
         case = await CaseFileModel.get_by_id(id)
         if case is not None:
-            title = t.title(id=case.id)
+            title = t.cf.title(id=case.id)
             embed = self.get_case_embed(title, case)
         else:
             embed = Embed(
-                title=t.not_found.by_id.title(id=id),
-                description=t.not_found.by_id.description(id=id),
+                title=t.cf.not_found.by_id.title(id=id),
+                description=t.cf.not_found.by_id.description(id=id),
                 color=Colors.case_file,
             )
         await ctx.send(embeds=[embed])
@@ -115,13 +115,13 @@ class CaseFile(Extension):
         old_accusation = self.cf_accusation_cache.get(ctx.author.id, MISSING)
 
         modal = Modal(
-            title=t.modal.title,
+            title=t.cf.modal.title,
             custom_id="case.create|accusation",
             components=[
                 ParagraphText(
-                    label=t.modal.accusation,
+                    label=t.cf.modal.accusation,
                     custom_id="accusation",
-                    placeholder=t.modal.placeholder,
+                    placeholder=t.cf.modal.placeholder,
                     value=old_accusation,
                     required=True,
                     max_length=EMBED_FIELD_VALUE_LENGTH,
@@ -152,10 +152,10 @@ class CaseFile(Extension):
         preview.id = 0
 
         components = ActionRow(
-            Button(style=ButtonStyles.SUCCESS, label=t.buttons.looks_okay, custom_id="case.create|yes"),
-            Button(style=ButtonStyles.DANGER, label=t.buttons.cancel, custom_id="case.create|no"),
+            Button(style=ButtonStyles.SUCCESS, label=t.cf.buttons.looks_okay, custom_id="case.create|yes"),
+            Button(style=ButtonStyles.DANGER, label=t.cf.buttons.cancel, custom_id="case.create|no"),
         )
-        embed = self.get_case_embed(t.title(id=preview.id), preview)
+        embed = self.get_case_embed(t.cf.title(id=preview.id), preview)
 
         msg = await ctx.send(embeds=[embed], components=[components])
         c_ctx = (
@@ -169,7 +169,7 @@ class CaseFile(Extension):
 
         if c_ctx.custom_id == "case.create|yes":
             case = await CaseFileModel.create(**case_kwargs)
-            embed = self.get_case_embed(t.title(id=case.id), case)
+            embed = self.get_case_embed(t.cf.title(id=case.id), case)
             components = []
         else:
             for c in components.components:
@@ -182,8 +182,8 @@ class CaseFile(Extension):
     def get_case_embed(title: str, case: CaseFileModel) -> Embed:
         return Embed(
             title=title,
-            description=t.description(
-                status=getattr(t.status, _CASE_STATUS[case.status]),
+            description=t.cf.description(
+                status=getattr(t.cf.status, _CASE_STATUS[case.status]),
                 created=int(case.created.timestamp()),
                 last_edited=int(case.last_edited.timestamp()),
                 author=case.author,
@@ -191,25 +191,25 @@ class CaseFile(Extension):
             fields=[
                 # row 1
                 EmbedField(  # Judge
-                    name=t.case.judge.name,
-                    value=t.case.judge.value(judge=case.judge),
+                    name=t.cf.case.judge.name,
+                    value=t.cf.case.judge.value(judge=case.judge),
                     inline=True,
                 ),
                 EmbedField(  # Lay Judge
-                    name=t.case.lay_judge.name,
-                    value=t.case.lay_judge.value(lay_judge=case.lay_judge, cnt=case.lay_judge is not None),
+                    name=t.cf.case.lay_judge.name,
+                    value=t.cf.case.lay_judge.value(lay_judge=case.lay_judge, cnt=case.lay_judge is not None),
                     inline=True,
                 ),
                 EmbedField("\u200b", "\u200b", True),
                 # row 2
                 EmbedField(  # Complainant
-                    name=t.case.complainant.name,
-                    value=t.case.complainant.value(complainant=case.complainant),
+                    name=t.cf.case.complainant.name,
+                    value=t.cf.case.complainant.value(complainant=case.complainant),
                     inline=True,
                 ),
                 EmbedField(  # Complainant Lawyer
-                    name=t.case.complainant_lawyer.name,
-                    value=t.case.complainant_lawyer.value(
+                    name=t.cf.case.complainant_lawyer.name,
+                    value=t.cf.case.complainant_lawyer.value(
                         complainant_lawyer=case.complainant_lawyer, cnt=case.complainant_lawyer is not None
                     ),
                     inline=True,
@@ -217,13 +217,13 @@ class CaseFile(Extension):
                 EmbedField("\u200b", "\u200b", True),
                 # row 3
                 EmbedField(  # Defendant
-                    name=t.case.defendant.name,
-                    value=t.case.defendant.value(defendant=case.defendant),
+                    name=t.cf.case.defendant.name,
+                    value=t.cf.case.defendant.value(defendant=case.defendant),
                     inline=True,
                 ),
                 EmbedField(  # Defendant Lawyer
-                    name=t.case.defendant_lawyer.name,
-                    value=t.case.defendant_lawyer.value(
+                    name=t.cf.case.defendant_lawyer.name,
+                    value=t.cf.case.defendant_lawyer.value(
                         defendant_lawyer=case.defendant_lawyer, cnt=case.defendant_lawyer is not None
                     ),
                     inline=True,
@@ -231,20 +231,20 @@ class CaseFile(Extension):
                 EmbedField("\u200b", "\u200b", True),
                 # row 4
                 EmbedField(  # Witness
-                    name=t.case.witness.name,
-                    value=t.case.witness.value(witness=case.witness, cnt=case.witness is not None),
+                    name=t.cf.case.witness.name,
+                    value=t.cf.case.witness.value(witness=case.witness, cnt=case.witness is not None),
                     inline=True,
                 ),
                 EmbedField(  # Expert
-                    name=t.case.expert.name,
-                    value=t.case.expert.value(expert=case.expert, cnt=case.expert is not None),
+                    name=t.cf.case.expert.name,
+                    value=t.cf.case.expert.value(expert=case.expert, cnt=case.expert is not None),
                     inline=True,
                 ),
                 EmbedField("\u200b", "\u200b", True),
                 # row 5
                 EmbedField(  # Accusation
-                    name=t.case.accusation.name,
-                    value=t.case.accusation.value(accusation=case.accusation),
+                    name=t.cf.case.accusation.name,
+                    value=t.cf.case.accusation.value(accusation=case.accusation),
                     inline=False,
                 ),
             ],
