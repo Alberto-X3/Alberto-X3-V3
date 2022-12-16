@@ -80,5 +80,6 @@ def test_name_regex():
 
 
 def test_get_language():
+    pytest.skip("utils.get_language() has to be async-called")
     assert pytest.raises(errors.DeveloperArgumentError, lambda: utils.get_language())
     assert pytest.raises(errors.DeveloperArgumentError, lambda: utils.get_language(guild=0, user=0))
