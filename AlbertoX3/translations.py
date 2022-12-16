@@ -1,4 +1,5 @@
 __all__ = (
+    "language",
     "Translations",
     "TranslationNamespace",
     "merge",
@@ -7,17 +8,20 @@ __all__ = (
 )
 
 
-from naff import Absent, Context
+from contextvars import ContextVar
+from naff import Absent
 from pathlib import Path
 from typing import NoReturn
 from yaml import safe_load
 from .constants import Config, MISSING
 from .errors import UnsupportedLanguageError, UnsupportedTranslationTypeError
 from .misc import FormatStr, PrimitiveExtension
-from .utils import get_language, get_logger
+from .utils import get_logger
 
 
 logger = get_logger(__name__)
+
+language: ContextVar[str] = ContextVar("language")
 
 
 def merge(base: dict, src: dict) -> dict:
@@ -106,13 +110,10 @@ class TranslationNamespace:
 
         return self._translations[lan]
 
-    def tn_get_translation(self, key: str, ctx: Absent[Context] = MISSING) -> dict | str:
-        if ctx is MISSING:
-            translations = self.tn_get_language(Config.LANGUAGE_DEFAULT)
-        else:
-            translations = self.tn_get_language(
-                get_language(user=ctx.user) or get_language(guild=ctx.guild) or Config.LANGUAGE_DEFAULT
-            )
+    def tn_get_translation(self, key: str, lan: str = MISSING) -> dict | str:
+        if lan is MISSING:
+            lan = language.get(Config.LANGUAGE_DEFAULT)
+        translations = self.tn_get_language(lan)
 
         if key not in translations:
             translations = self.tn_get_language(Config.LANGUAGE_FALLBACK)
