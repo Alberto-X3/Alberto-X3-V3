@@ -119,15 +119,19 @@ class BasePermissionLevel(Enum):
         return self.value.roles
 
     @classmethod
-    async def get_permission_level(cls, member: BaseUser) -> "BasePermissionLevel":
+    async def get_permission_level(cls, user: BaseUser) -> "BasePermissionLevel":
         if override := permission_override.get(None):
             return override
 
-        return await cls._get_permission_level(member)
+        return await cls._get_permission_level(user)
 
     @classmethod
-    async def _get_permission_level(cls, member: BaseUser) -> "BasePermissionLevel":
+    async def _get_permission_level(cls, user: BaseUser) -> "BasePermissionLevel":
         raise NotImplementedError
+
+    async def check_permissions(self, user: BaseUser) -> bool:
+        level: BasePermissionLevel = await self.get_permission_level(user)
+        return level.level >= self.level
 
     @property
     def check(self) -> Callable[[Context], Awaitable[bool]]:
