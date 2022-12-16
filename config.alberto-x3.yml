@@ -13,6 +13,7 @@ language:
   fallback: EN
   available:
     - EN
+    - DE
 
 extensions:
   folder: "extensions"
