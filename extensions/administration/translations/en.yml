@@ -1,0 +1,2 @@
+sudo:
+  not_a_super_user: "{user} has no sudo permission! *This incident will be reported!*"

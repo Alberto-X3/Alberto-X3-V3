@@ -56,3 +56,11 @@ permission_levels:
 
 team_permission_level: team
 default_permission_level: administrator
+
+default_permission_overrides:
+
+  administration:
+    s_clear_cache: owner
+    s_reload: owner
+    s_stop: owner
+    s_kill: owner

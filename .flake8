@@ -87,3 +87,6 @@ per-file-ignores =
     extensions/*/__init__.py:ANN001,ANN201
     extensions/*/db.py:A003
     extensions/*/ext.py:ANN201
+
+    # from ext.py outsourced ext-files:
+    extensions/administration/sudo.py:ANN201
