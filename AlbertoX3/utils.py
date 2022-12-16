@@ -22,6 +22,7 @@ from datetime import datetime, timezone
 from logging import Logger
 from naff import Context, User, Member, Snowflake_Type, Guild, Absent
 from pathlib import Path
+from pprint import pformat
 from typing import TypeVar, Optional
 from .constants import MISSING, LIB_PATH, StyleConfig, Config
 from .errors import DeveloperArgumentError, UnrecognisedBooleanError
@@ -115,7 +116,7 @@ def get_value_table(obj: object, /, *, style: Absent[dict[str, str] | StyleConfi
         style = StyleConfig.from_dict(style)
 
     arguments: list[str] = [a for a in dir(obj) if not a.startswith("_")]
-    values: list[str] = [f"{getattr(obj, a)!r}" for a in arguments]
+    values: list[str] = [pformat(getattr(obj, a), indent=0, depth=1, compact=True) for a in arguments]
 
     len_a: int = len(max(arguments + [style.t_attribute], key=len))
     len_v: int = len(max(values + [style.t_value], key=len))
