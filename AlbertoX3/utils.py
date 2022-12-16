@@ -253,7 +253,7 @@ def get_subclasses_in_extensions(base: C, *, extensions: Absent[list[PrimitiveEx
     return [cls for cls in base.__subclasses__() if sys.modules[cls.__module__].__package__ in packages]
 
 
-def get_language(
+async def get_language(
     *, guild: Absent[Guild | Snowflake_Type] = MISSING, user: Absent[User | Member | Snowflake_Type] = MISSING
 ) -> Optional[str]:
     """
@@ -291,7 +291,6 @@ def get_language(
         raise DeveloperArgumentError("Either 'guild' or 'user' have to be set!")
 
     # ToDo: connect to database
-    # Note (for future me): you should call an async function in here for the database ;)
     return None
 
 

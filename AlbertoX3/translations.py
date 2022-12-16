@@ -1,5 +1,6 @@
 __all__ = (
     "language",
+    "language_wrapper",
     "Translations",
     "TranslationNamespace",
     "merge",
@@ -9,19 +10,46 @@ __all__ = (
 
 
 from contextvars import ContextVar
-from naff import Absent
+from functools import wraps
+from naff import Absent, MISSING, Context
 from pathlib import Path
-from typing import NoReturn
+from typing import NoReturn, Callable, Awaitable, TypeVar, ParamSpec
 from yaml import safe_load
-from .constants import Config, MISSING
+from .constants import Config
 from .errors import UnsupportedLanguageError, UnsupportedTranslationTypeError
 from .misc import FormatStr, PrimitiveExtension
-from .utils import get_logger
+from .utils import get_language, get_logger
 
 
 logger = get_logger(__name__)
+T = TypeVar("T")
+P = ParamSpec("P")
+
 
 language: ContextVar[str] = ContextVar("language")
+
+
+def language_wrapper(func: Callable[P, Awaitable[T]]) -> Callable[P, Awaitable[T]]:
+    @wraps(func)
+    async def decorator(*args: P.args, **kwargs: P.kwargs) -> T:
+        # check kwargs for "ctx", if not present check args
+        if not isinstance(ctx := kwargs.get("ctx", MISSING), Context):
+            for arg in args:
+                if isinstance(arg, Context):
+                    ctx = arg
+                    break
+
+        # set language if a Context could be found
+        if ctx is not MISSING:
+            language.set(
+                await get_language(user=ctx.author)
+                or (await get_language(guild=ctx.guild) if ctx.guild is not None else None)
+                or Config.LANGUAGE_DEFAULT
+            )
+
+        return await func(*args, **kwargs)
+
+    return decorator
 
 
 def merge(base: dict, src: dict) -> dict:
