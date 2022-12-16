@@ -17,7 +17,10 @@ P = ParamSpec("P")
 
 
 def multi_wrap(func: Callable[P, Awaitable[T]]) -> Callable[P, Awaitable[T]]:
-    return db_wrapper(language_wrapper(func))
+    if getattr(func, "_is_multi_wrapped_by_naff_wrapper", False) is False:
+        func = db_wrapper(language_wrapper(func))
+        func._is_multi_wrapped_by_naff_wrapper = True
+    return func
 
 
 class Extension(naff_Extension):
