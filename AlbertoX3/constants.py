@@ -67,7 +67,7 @@ class Config:
     AUTO_CHANNEL: Absent[int] = MISSING
     # permission
     PERMISSION_DEFAULT_OVERRIDES: Absent[dict[str, dict[str, "BasePermissionLevel"]]] = MISSING
-    PERMISSION_DEFAULT_LEVEL: Absent[str] = MISSING
+    PERMISSION_DEFAULT_LEVEL: Absent["BasePermissionLevel"] = MISSING
     PERMISSION_LEVELS: Absent[type["BasePermissionLevel"]] = MISSING
     PERMISSION_LEVEL_TEAM: Absent["PermissionLevel"] = MISSING
 
