@@ -103,7 +103,7 @@ class Permissions(Extension):
 
             granted_by: list[str] = [f"`{gp}`" for gp in level.guild_permissions]
             for role_name in level.roles:
-                role: Role | None = ctx.guild.get_role(await RoleSettings.get(role_name))
+                role: Role | None = await ctx.guild.fetch_role(await RoleSettings.get(role_name))
                 if role is not None:
                     granted_by.append(role.mention)
 
