@@ -6,6 +6,7 @@ __all__ = (
     "get_lib_version",
     "get_extensions",
     "get_subclasses_in_extensions",
+    "get_permissions",
     "get_language",
     "get_member",
     "get_user",
@@ -22,6 +23,7 @@ from typing import TypeVar, Optional
 from .constants import MISSING, LIB_PATH, StyleConfig, Config
 from .errors import DeveloperArgumentError
 from .misc import PrimitiveExtension, EXTENSION_FEATURES
+from .permission import BasePermission
 from ._utils_essentials import get_logger, get_bool
 
 
@@ -176,6 +178,13 @@ def get_subclasses_in_extensions(base: C, *, extensions: Absent[list[PrimitiveEx
     packages: set[str] = {ext.package for ext in extensions}
 
     return [cls for cls in base.__subclasses__() if sys.modules[cls.__module__].__package__ in packages]
+
+
+def get_permissions() -> list[BasePermission]:
+    permissions: list[BasePermission] = []
+    for bp_cls in BasePermission.__subclasses__():
+        permissions.extend(list(bp_cls))
+    return permissions
 
 
 async def get_language(
