@@ -2,7 +2,7 @@ __all__ = ("Sudo",)
 
 
 from AlbertoX3 import get_logger, Extension, t, TranslationNamespace, OWNER_ID, permission_override, Config, redis
-from naff.api.events.internal import CommandError
+from naff.api.events.internal import CommandCompletion
 from naff import (
     Client,
     BaseChannel,
@@ -29,12 +29,12 @@ async def is_super_user(ctx: InteractionContext) -> bool:
 
 class Sudo(Extension):
     def __init__(self, bot: Client):
-        self.s_command_cache: dict[BaseChannel, SlashCommand] = {}
+        self.s_command_cache: dict[BaseChannel, tuple[SlashCommand, list, dict]] = {}
 
     @listen()
-    async def on_error(self, event: CommandError):
-        if event.ctx.author.id == OWNER_ID:
-            self.s_command_cache[event.ctx.channel] = event.ctx.command  # type: ignore
+    async def on_owner_cmd(self, event: CommandCompletion):
+        if (ctx := event.ctx).author.id == OWNER_ID:
+            self.s_command_cache[event.ctx.channel] = (ctx.command, ctx.args, ctx.kwargs)  # type: ignore
 
     @slash_command(
         "sudo",
@@ -48,8 +48,10 @@ class Sudo(Extension):
             return
 
         permission_override.set(Config.PERMISSION_LEVELS.max())
-        ctx.command = command = self.s_command_cache[channel]
-        await self.bot._run_slash_command(command=command, ctx=ctx)  # noqa
+
+        ctx.command, ctx.args, ctx.kwargs = self.s_command_cache[channel]
+        ctx.invoke_target = f"{ctx.invoke_target} ({ctx.command.resolved_name})"
+        await self.bot._run_slash_command(command=ctx.command, ctx=ctx)  # noqa
 
     @s_sudo.subcommand(
         sub_cmd_name="clear-cache",
