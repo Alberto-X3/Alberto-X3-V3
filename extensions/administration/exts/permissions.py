@@ -70,7 +70,11 @@ class Permissions(Extension):
         sub_cmd_name="list",
         sub_cmd_description="List all permissions",
         options=[
-            SlashCommandOption(name="min_level", type=OptionTypes.STRING, min_length=1, required=False),
+            SlashCommandOption(
+                name="min_level",
+                type=OptionTypes.STRING,
+                required=False,
+            ),
         ],
     )
     @AdministrationPermission.p_view_all.check
@@ -119,4 +123,45 @@ class Permissions(Extension):
 
         await ctx.send(embeds=[embed])
 
-    # manage
+    @p_permissions.subcommand(
+        sub_cmd_name="set",
+        sub_cmd_description="Manage permissions",
+        options=[
+            SlashCommandOption(
+                name="permission_name",
+                description="The name of the permission",
+                type=OptionTypes.STRING,
+            ),
+            SlashCommandOption(
+                name="level",
+                description="The new level for the permission",
+                type=OptionTypes.STRING,
+            ),
+        ],
+    )
+    @AdministrationPermission.p_manage.check
+    async def p_set(self, ctx: InteractionContext, permission_name: str, level: PermissionLevelConverter = MISSING):
+        level: BasePermissionLevel
+        if level is MISSING:
+            await ctx.send(t.p.invalid.level(level=ctx.kwargs["level"]))
+            return
+        for permission in get_permissions():
+            if permission.fullname.lower() == permission_name.lower():
+                break
+        else:
+            await ctx.send(t.p.invalid.permission(permission=permission_name))
+            return
+
+        max_level = await Config.PERMISSION_LEVELS.get_permission_level(ctx.author)
+        if max(level.level, (await permission.resolve()).level) > max_level.level:
+            await ctx.send(t.p.to_high_to_manage)
+            return
+
+        await permission.set(level)
+
+        embed = Embed(
+            title=t.p.title.permissions,
+            description=t.p.permission_set(permission=permission.fullname, level=level.description),
+            color=Colors.permissions,
+        )
+        await ctx.send(embeds=[embed])

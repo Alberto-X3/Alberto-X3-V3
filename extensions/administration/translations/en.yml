@@ -25,3 +25,8 @@ p:
   granted_by:
     title: "Granted by:"
     bullet_point: "🔹 {by}"
+  invalid:
+    level: "Invalid permission level `{level}`!"
+    permission: "Invalid permission `{permission}`!"
+  to_high_to_manage: "You are not allowed to manage this permission level!"
+  permission_set: "**Permission** `{permission}` **granted** to `{level}` and higher! \\✅"
