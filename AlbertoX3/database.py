@@ -51,7 +51,7 @@ from .environment import (
     REDIS_PORT,
     REDIS_PASSWORD,
 )
-from .utils import get_logger
+from ._utils_essentials import get_logger
 
 
 T = TypeVar("T")
