@@ -64,3 +64,7 @@ default_permission_overrides:
     s_reload: owner
     s_stop: owner
     s_kill: owner
+
+    p_view_own: public
+    p_view_all: supporter
+    p_manage: administrator
