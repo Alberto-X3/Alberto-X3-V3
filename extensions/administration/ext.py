@@ -3,7 +3,7 @@ __all__ = ("Administration",)
 
 from AlbertoX3 import get_logger, Extension
 from naff import Client
-from .sudo import Sudo
+from .exts import Sudo
 
 
 logger = get_logger(__name__)

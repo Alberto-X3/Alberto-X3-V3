@@ -12,7 +12,7 @@ from naff import (
     check,
     listen,
 )
-from .permission import AdministrationPermission
+from ..permission import AdministrationPermission
 
 
 logger = get_logger(__name__)
@@ -69,7 +69,7 @@ class Sudo(Extension):
     @AdministrationPermission.s_stop.check
     async def s_stop(self, ctx: InteractionContext):
         await ctx.send(t.s.done.stopping)
-        await self.bot.close()
+        await self.bot.stop()
 
     @s_sudo.subcommand(
         sub_cmd_name="kill",
