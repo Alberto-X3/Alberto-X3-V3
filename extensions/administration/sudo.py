@@ -17,7 +17,7 @@ from .permission import AdministrationPermission
 
 logger = get_logger(__name__)
 tg: TranslationNamespace = t.g
-t: TranslationNamespace = t.administration.sudo  # real type: TranslationDict
+t: TranslationNamespace = t.administration
 
 
 @check
@@ -44,7 +44,7 @@ class Sudo(Extension):
     @is_super_user
     async def s_sudo(self, ctx: InteractionContext):
         if (channel := ctx.channel) not in self.s_command_cache:
-            await ctx.send(content=t.command_not_in_cache(channel=channel.mention))
+            await ctx.send(content=t.s.command_not_in_cache(channel=channel.mention))
             return
 
         permission_override.set(Config.PERMISSION_LEVELS.max())
@@ -58,7 +58,7 @@ class Sudo(Extension):
     @AdministrationPermission.s_clear_cache.check
     async def s_clear_cache(self, ctx: InteractionContext):
         await redis.flushdb()
-        await ctx.send(t.done.cache)
+        await ctx.send(t.s.done.cache)
 
     # reload
 
@@ -68,7 +68,7 @@ class Sudo(Extension):
     )
     @AdministrationPermission.s_stop.check
     async def s_stop(self, ctx: InteractionContext):
-        await ctx.send(t.done.stopping)
+        await ctx.send(t.s.done.stopping)
         await self.bot.close()
 
     @s_sudo.subcommand(
@@ -77,5 +77,5 @@ class Sudo(Extension):
     )
     @AdministrationPermission.s_kill.check
     async def s_kill(self, ctx: InteractionContext):
-        await ctx.send(t.done.killing)
+        await ctx.send(t.s.done.killing)
         __import__("sys").exit(1)
