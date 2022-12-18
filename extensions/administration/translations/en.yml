@@ -6,6 +6,10 @@ permissions:
   p_view_own: view own permissions
   p_view_all: view all permissions
   p_manage: manage permissions
+  r_config_read: read role configuration
+  r_config_write: write role configuration
+  r_list_members: list role members
+  r_roles_clone: clone existing roles
 
 s:
   not_a_super_user: "{user} has no sudo permission! *This incident will be reported!*"
@@ -30,3 +34,16 @@ p:
     permission: "Invalid permission `{permission}`!"
   to_high_to_manage: "You are not allowed to manage this permission level!"
   permission_set: "**Permission** `{permission}` **granted** to `{level}` and higher! \\✅"
+r:
+  title: "Roles"
+  created: "Successfully created the role {role}! \\✅"
+  missing:
+    role: "*role not set*"
+    permission:
+      title:
+        one: "Missing permission on role:"
+        many: "Missing permissions on role:"
+      value: "🔸 `{permission}`"
+  invalid:
+    config: "Invalid role configuration `{config}`!"
+  config_set: "**Configuration** `{config}` has been set to {role}! \\✅"
