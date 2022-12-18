@@ -2,13 +2,13 @@ __all__ = ("RolePlayPermission",)
 
 
 from aenum import auto
-from AlbertoX3 import BasePermission
+from AlbertoX3 import BasePermission, t
 
 
 class RolePlayPermission(BasePermission):
     @property
     def description(self) -> str:
-        return "ADD DESCRIPTION TO RP-PERMISSION!!!"
+        return t.role_play.permissions[self.name]
 
     cf_view = auto()
     cf_create = auto()

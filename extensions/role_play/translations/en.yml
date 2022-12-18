@@ -1,3 +1,9 @@
+permissions:
+  cf_view: view case files
+  cf_create: create case files
+  cf_edit: edit case files
+  cf_delete: delete case files
+
 cf:
   about:
     title: "Case file"
