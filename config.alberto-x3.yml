@@ -25,6 +25,19 @@ tmp:
     auto: true
     on_startup: true
 
+roles:
+  admin:
+    name: Administrator
+
+  mod:
+    name: Moderator
+
+  sup:
+    name: Supporter
+
+  team:
+    name: Team
+
 permission_levels:
   administrator:
     name: Administrator
@@ -59,6 +72,21 @@ team_permission_level: team
 default_permission_level: administrator
 
 default_permission_overrides:
+
+  administration:
+    s_clear_cache: owner
+    s_reload: owner
+    s_stop: owner
+    s_kill: owner
+
+    p_view_own: public
+    p_view_all: supporter
+    p_manage: administrator
+
+    r_config_read: supporter
+    r_config_write: administrator
+    r_list_members: supporter
+    r_roles_clone: administrator
 
   role_play:
     cf_view: public

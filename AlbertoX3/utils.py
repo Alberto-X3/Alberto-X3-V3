@@ -6,6 +6,7 @@ __all__ = (
     "get_lib_version",
     "get_extensions",
     "get_subclasses_in_extensions",
+    "get_permissions",
     "get_language",
     "get_member",
     "get_user",
@@ -14,55 +15,20 @@ __all__ = (
 
 import re
 import sys
-from AlbertUnruhUtils.utils.logger import (
-    get_logger as auu_get_logger,
-    _LOG_LEVEL_STR,  # noqa (_LOG_LEVEL_STR is not in __all__)
-)
 from datetime import datetime, timezone
-from logging import Logger
 from naff import Context, User, Member, Snowflake_Type, Guild, Absent
 from pathlib import Path
 from pprint import pformat
 from typing import TypeVar, Optional
 from .constants import MISSING, LIB_PATH, StyleConfig, Config
-from .errors import DeveloperArgumentError, UnrecognisedBooleanError
+from .errors import DeveloperArgumentError
 from .misc import PrimitiveExtension, EXTENSION_FEATURES
+from .permission import BasePermission
+from ._utils_essentials import get_logger, get_bool
 
 
 T = TypeVar("T")
 C = TypeVar("C", bound=type[object])
-
-
-def get_logger(name: str, level: Optional[_LOG_LEVEL_STR | int] = None) -> Logger:
-    """
-    Gets a logger.
-
-    Notes
-    -----
-    You should only pass a hardcoded name for ``name`` or use ``__name__``.
-    Noteworthy is that any names containing a "." (dot) will be modified.
-
-    Parameters
-    ----------
-    name: str
-        The loggers name. (Set a name or use ``__name__``/``__package__`` in any extension or ``__name__``)
-    level: _LOG_LEVEL_STR, int, optional
-        The loglevel for the logger.
-
-    Returns
-    -------
-    Logger
-        The created logger.
-    """
-    if "." in name:
-        parts = name.split(".")
-        match len(parts):
-            case 2:  # __package__ from an ext/__name__ from AlbertoX3.*-file
-                name = parts[1]
-            case 3:  # __name__ from an ext
-                name = parts[1]
-
-    return auu_get_logger(name=name, level=level, add_handler=False)
 
 
 def get_utcnow() -> datetime:
@@ -139,46 +105,6 @@ def get_value_table(obj: object, /, *, style: Absent[dict[str, str] | StyleConfi
     return "\n".join(lines)
 
 
-def get_bool(obj: object, /) -> bool:
-    """
-    Currently matches:
-        - True -> boolean, 1, lowered("true", "t", "yes", "y"), "1"
-        - False -> boolean, -1, 0, lowered("false", "f", "no", "n"), "-1", "0"
-
-    Parameters
-    ----------
-    obj: object
-        The object to match (should be bool, int or str; others aren't supported at the moment)
-
-    Returns
-    -------
-    bool
-        The matched boolean.
-
-    Raises
-    ------
-    UnrecognisedBooleanError
-        Raised when the object couldn't be matched to a boolean.
-    """
-    match obj:
-        case bool():
-            return obj  # type: ignore
-        case int():
-            match obj:
-                case 1:
-                    return True
-                case -1 | 0:
-                    return False
-        case str():
-            match obj.lower():  # type: ignore
-                case "true" | "t" | "yes" | "y" | "1":
-                    return True
-                case "false" | "f" | "no" | "n" | "-1" | "0":
-                    return False
-    # will be changed to UnrecognisedBooleanError when I'm reaching the error-files
-    raise UnrecognisedBooleanError(obj)
-
-
 _VERSION_REGEX: re.Pattern[str] = re.compile(r"^__version__\s*=\s*[\'\"]([^\'\"]*)[\'\"]", re.MULTILINE)
 
 
@@ -252,6 +178,13 @@ def get_subclasses_in_extensions(base: C, *, extensions: Absent[list[PrimitiveEx
     packages: set[str] = {ext.package for ext in extensions}
 
     return [cls for cls in base.__subclasses__() if sys.modules[cls.__module__].__package__ in packages]
+
+
+def get_permissions() -> list[BasePermission]:
+    permissions: list[BasePermission] = []
+    for bp_cls in BasePermission.__subclasses__():
+        permissions.extend(list(bp_cls))
+    return permissions
 
 
 async def get_language(
