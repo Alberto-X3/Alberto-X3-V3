@@ -20,9 +20,9 @@ from naff import (
     Button,
     ButtonStyles,
 )
-from .colors import Colors
-from .db import CaseFileModel
-from .permission import RolePlayPermission
+from ..colors import Colors
+from ..db import CaseFileModel
+from ..permission import RolePlayPermission
 
 
 logger = get_logger(__name__)
@@ -50,7 +50,10 @@ class CaseFile(Extension):
         embed = Embed(title=t.cf.about.title, description=t.cf.about.description.replace("\n", "\n\n"))
         await ctx.send(embeds=[embed])
 
-    @cf_about.subcommand(sub_cmd_name="latest", sub_cmd_description="Get the latest *Case file*")
+    @cf_about.subcommand(
+        sub_cmd_name="latest",
+        sub_cmd_description="Get the latest *Case file*",
+    )
     @RolePlayPermission.cf_view.check
     async def cf_latest(self, ctx: InteractionContext):
         case = await CaseFileModel.get_last_recent_updated()
