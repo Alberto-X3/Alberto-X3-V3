@@ -1,7 +1,7 @@
 __all__ = ("CaseFile",)
 
 
-from AlbertoX3 import get_logger, Extension, t, TranslationNamespace
+from AlbertoX3 import get_logger, Extension, t, TranslationNamespace, db, select
 from naff import (
     Embed,
     EmbedField,
@@ -47,7 +47,40 @@ class CaseFile(Extension):
         sub_cmd_description="Basic information about *Case File*",
     )
     async def cf_about(self, ctx: InteractionContext):
-        embed = Embed(title=t.cf.about.title, description=t.cf.about.description.replace("\n", "\n\n"))
+        embed = Embed(
+            title=t.cf.about.title,
+            description=t.cf.about.description.replace("\n", "\n\n"),
+            color=Colors.case_file,
+        )
+
+        participants: set[int | None] = {None}  # None will be added since fields are nullable
+        total = 0  # ID isn't reliable since CF's can be deleted
+        participant_fields: set[str] = {
+            "author",
+            "judge",
+            "complainant",
+            "defendant",
+            "lay_judge",
+            "complainant_lawyer",
+            "defendant_lawyer",
+            "witness",
+            "expert",
+        }
+        async for cf in await db.stream(select(CaseFileModel)):
+            participants.update({getattr(cf, p) for p in participant_fields})
+            total += 1
+        participants.discard(None)
+
+        embed.add_field(
+            name=t.cf.about.statistics.title,
+            value=t.cf.about.statistics.description(
+                case_files=total,
+                participants=len(participants),
+                last_edited=int((await CaseFileModel.get_last_recent_updated()).last_edited.timestamp()),
+                latest_link=self.cf_latest.mention(scope=ctx.guild.id),
+            ),
+        )
+
         await ctx.send(embeds=[embed])
 
     @cf_about.subcommand(

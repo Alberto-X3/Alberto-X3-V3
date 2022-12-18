@@ -13,6 +13,16 @@ cf:
 
       *Please do not take it too seriously*
       "
+    statistics:
+      title: "Statistics"
+      description: "
+        Total Case Files: {case_files}
+
+        Total Participants: {participants}
+
+        Last Activity: <t:{last_edited}:R>
+        *(use {latest_link} to get more information)*
+        "
   title: "Case file #{id}"
   last_recent_title: "Last recent updated Case File: #{id}"
   description: "
