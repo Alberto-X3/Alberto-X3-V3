@@ -1,5 +1,6 @@
 __all__ = (
     "TOKEN",
+    "OWNER_ID",
     "LOG_LEVEL",
     "DB_DRIVER",
     "DB_HOST",
@@ -21,13 +22,14 @@ __all__ = (
 
 from dotenv import load_dotenv
 from os import environ, getenv
-from .utils import get_bool
+from ._utils_essentials import get_bool
 
 
 load_dotenv()
 
 
 TOKEN: str = environ["TOKEN"]
+OWNER_ID: int = int(environ.get("OWNER_ID", -1))
 
 LOG_LEVEL: str | int
 LOG_LEVEL = environ.get("LOG_LEVEL", "NOTSET")

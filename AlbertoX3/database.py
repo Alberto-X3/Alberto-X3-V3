@@ -51,7 +51,7 @@ from .environment import (
     REDIS_PORT,
     REDIS_PASSWORD,
 )
-from .utils import get_logger
+from ._utils_essentials import get_logger
 
 
 T = TypeVar("T")
@@ -210,14 +210,16 @@ class DB:
         async with self.engine.begin() as conn:
             await conn.run_sync(partial(Base.metadata.create_all, tables=tables))
 
-    async def add(self, obj: T) -> T:
+    async def add(self, obj: T, commit: bool = False) -> T:
         self.session.add(obj)
-        await self.commit()
+        if commit:
+            await self.commit()
         return obj
 
-    async def delete(self, obj: T) -> T:
+    async def delete(self, obj: T, commit: bool = False) -> T:
         await self.session.delete(obj)
-        await self.commit()
+        if commit:
+            await self.commit()
         return obj
 
     async def exec(self, statement: Executable, *args: Any, **kwargs: Any) -> Any:  # noqa: A003

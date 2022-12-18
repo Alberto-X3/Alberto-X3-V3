@@ -66,8 +66,9 @@ class Config:
     AUTO_SECOND: Absent[int] = MISSING
     AUTO_CHANNEL: Absent[int] = MISSING
     # permission
+    ROLES: Absent[dict[str, tuple[str]]] = MISSING
     PERMISSION_DEFAULT_OVERRIDES: Absent[dict[str, dict[str, "BasePermissionLevel"]]] = MISSING
-    PERMISSION_DEFAULT_LEVEL: Absent[int] = MISSING
+    PERMISSION_DEFAULT_LEVEL: Absent["BasePermissionLevel"] = MISSING
     PERMISSION_LEVELS: Absent[type["BasePermissionLevel"]] = MISSING
     PERMISSION_LEVEL_TEAM: Absent["PermissionLevel"] = MISSING
 
@@ -130,6 +131,7 @@ class Config:
         cls.AUTO_CHANNEL = 822589081337724939
 
         # permission
+        cls.ROLES = {k: (v["name"],) for k, v in config.get("roles", {}).items()}
         cls.PERMISSION_DEFAULT_OVERRIDES = {}  # will be further modified in next line
         cls.__load_permission(
             permission_levels_raw=config.get("permission_levels", {}),
