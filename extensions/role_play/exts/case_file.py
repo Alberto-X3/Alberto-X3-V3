@@ -205,6 +205,7 @@ class CaseFile(Extension):
 
         if c_ctx.custom_id == "case.create|yes":
             case = await CaseFileModel.create(**case_kwargs)
+            await db.commit()  # to set case.id
             embed = self.get_case_embed(t.cf.title(id=case.id), case)
             components = []
         else:
