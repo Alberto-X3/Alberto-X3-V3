@@ -31,7 +31,7 @@ bot = Client(
     sync_ext=True,
     sync_interactions=True,
     delete_unused_application_cmds=True,
-    auto_defer=True,
+    auto_defer=False,
 )
 
 
