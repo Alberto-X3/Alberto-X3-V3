@@ -39,7 +39,7 @@ NOTE:
         https://bit.ly/AlbertoX3-BotAPI-Incompatible
 
 
-LAST-EDITED: 2022.12.29  # YYYY.MM.DD
+LAST-EDITED: 2022.12.30  # YYYY.MM.DD
 
 Copyright 2022-present (c) AlbertUnruh - Alberto-X3
 """
