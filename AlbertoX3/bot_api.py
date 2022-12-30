@@ -46,19 +46,23 @@ Copyright 2022-present (c) AlbertUnruh - Alberto-X3
 __all__ = (
     "Argument",
     "get_arguments",
+    "create_arguments",
+    "send_arguments",
 )
 
 
 import aiohttp
 import attrs
 import re
+import typing
 
 try:
-    from orjson import loads
+    from orjson import loads, dumps
 except ModuleNotFoundError:
-    from json import loads
+    from json import loads, dumps
 try:
-    from naff import Message
+    from naff import Client, Message
+    from naff.client.mixins.send import SendMixin
 except ModuleNotFoundError:
     # maybe other libraries like Discord.py are installed -> manual type-hinting
     class Attachment:
@@ -68,10 +72,17 @@ except ModuleNotFoundError:
         bot: bool
         id: int  # noqa A003
 
+    class Client:
+        user: Author
+
     class Message:
         attachments: list[Attachment]
         author: Author
         content: str
+
+    class SendMixin:
+        async def send(self, *_, **__):  # noqa ANN002, ANN003, ANN201
+            pass
 
 
 ALLOW_ORIGIN: bool = False
@@ -141,6 +152,34 @@ class Argument:
 
         return cls(author=author, origin=origin, targets=targets, endpoint=endpoint, content=content)
 
+    @classmethod
+    def create(
+        cls, client: Client, targets: list[int | typing.SupportsInt], endpoint: str, content: dict
+    ) -> "Argument":
+        author = client.user.id
+        return cls(
+            author=int(author),
+            origin=int(author),
+            targets=list(map(int, targets)),
+            endpoint=endpoint,
+            content=content,
+        )
+
 
 async def get_arguments(message: Message) -> Argument:
     return await Argument.from_message(message)
+
+
+def create_arguments(client: Client, targets: list[int | typing.SupportsInt], endpoint: str, content: dict) -> Argument:
+    return Argument.create(client, targets, endpoint, content)
+
+
+async def send_arguments(*, argument: Argument, client: Client, channel: SendMixin) -> typing.NoReturn:
+    content = f"origin>>{client.user.id}\n"
+    content += "".join(f"target>>{target}\n" for target in argument.targets)
+    content += f"endpoint>>{argument.endpoint}\n"
+    if isinstance(c := dumps(argument.content), bytes):
+        c = c.decode("utf-8")
+    content += c
+    # ToDo: add check whether or not the arguments have to be attached in a file
+    await channel.send(content)
