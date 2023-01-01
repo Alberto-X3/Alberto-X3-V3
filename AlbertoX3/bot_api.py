@@ -39,7 +39,8 @@ NOTE:
         https://bit.ly/AlbertoX3-BotAPI-Incompatible
 
 
-LAST-EDITED: 2022.12.30  # YYYY.MM.DD
+LAST-EDITED: 2023.01.01  # YYYY.MM.DD
+API-VERSION: 0.1
 
 Copyright 2022-present (c) AlbertUnruh - Alberto-X3
 """
@@ -55,6 +56,7 @@ import aiohttp
 import attrs
 import re
 import typing
+from io import StringIO
 
 try:
     from orjson import loads, dumps
@@ -81,12 +83,14 @@ except ModuleNotFoundError:
         content: str
 
     class SendMixin:
-        async def send(self, *_, **__):  # noqa ANN002, ANN003, ANN201
+        async def send(self, content: str, files: list[StringIO], *_, **__):  # noqa ANN002, ANN003, ANN201
             pass
 
 
 ALLOW_ORIGIN: bool = False
 """Whether bots can set ``origin`` or not"""
+MAX_MESSAGE_CONTENT_SIZE: int = 2000
+
 _ARGUMENT_VALIDATOR_REGEX: re.Pattern[str] = re.compile(
     r"^(origin>>\d+\n)?(target>>\d+\n)+endpoint>>.+(\n\{(.|\n)*}|)$"
 )
@@ -181,5 +185,9 @@ async def send_arguments(*, argument: Argument, client: Client, channel: SendMix
     if isinstance(c := dumps(argument.content), bytes):
         c = c.decode("utf-8")
     content += c
-    # ToDo: add check whether or not the arguments have to be attached in a file
-    await channel.send(content)
+    if len(content) > MAX_MESSAGE_CONTENT_SIZE:
+        file = StringIO(content)
+        file.name = f"{argument.endpoint}-request-from-{client.user.id}.txt"
+        await channel.send(files=[file])
+    else:
+        await channel.send(content=content)
