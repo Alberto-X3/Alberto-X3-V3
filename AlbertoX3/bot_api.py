@@ -28,6 +28,8 @@ COMMUNICATION FROM THE API ITSELF!
 PLEASE LET THE FILE AS IT IS!!!
 *The latest version can be found [here](https://github.com/Alberto-X3/Alberto-X3-V3/blob/develop/AlbertoX3/bot_api.py)*
 
+> Feels free to contribute and enhance the protocol on GitHub (link can be found above)!
+
 Requirements:
     The only true requirements are ``attrs`` to define the class ``Argument`` and to download attachments.
     Besides that ``orjson`` is suggested for faster json-operations, but it falls back to ``json`` if not installed.
@@ -39,12 +41,13 @@ NOTE:
         https://bit.ly/AlbertoX3-BotAPI-Incompatible
 
 
-LAST-EDITED: 2023.01.01  # YYYY.MM.DD
-API-VERSION: 0.1
+LAST-EDITED: 2023.01.02  # YYYY.MM.DD
+API-VERSION: 1  # current protocol-version  # won't be send in requests atm
 
 Copyright 2022-present (c) AlbertUnruh - Alberto-X3
 """
 __all__ = (
+    "BOT_API_VERSION",
     "Argument",
     "get_arguments",
     "create_arguments",
@@ -90,6 +93,9 @@ except ModuleNotFoundError:
 ALLOW_ORIGIN: bool = False
 """Whether bots can set ``origin`` or not"""
 MAX_MESSAGE_CONTENT_SIZE: int = 2000
+"""How long a message can be before it's moved into a file"""
+BOT_API_VERSION: str = re.search(r"^API-VERSION:\s*(\S+)\s*(#.*)?$", __doc__, re.MULTILINE).group(1)
+"""The version of the bot-api"""
 
 _ARGUMENT_VALIDATOR_REGEX: re.Pattern[str] = re.compile(
     r"^(origin>>\d+\n)?(target>>\d+\n)+endpoint>>.+(\n\{(.|\n)*}|)$"
@@ -123,7 +129,7 @@ class Argument:
     async def from_message(cls, message: Message) -> "Argument":
         if not (data := message.content):
             file = message.attachments[0]
-            async with aiohttp.client.ClientSession as session:
+            async with aiohttp.client.ClientSession() as session:
                 response = await session.get(file.url)
                 data = await response.text("utf-8")
 
