@@ -6,6 +6,7 @@ __url__ = "https://github.com/Alberto-X3/Alberto-X3-V3"
 
 
 from .aio import *
+from .bot_api import *
 from .colors import *
 from .constants import *
 from .contributors import *
