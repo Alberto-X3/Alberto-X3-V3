@@ -8,6 +8,7 @@ from naff import (
     InteractionContext,
     slash_command,
     SlashCommandOption,
+    SlashCommandChoice,
     OptionTypes,
     BaseUser,
     MISSING,
@@ -39,7 +40,7 @@ _CASE_STATUS: dict[int, str] = {
 
 
 async def rpp_cf_edit_check(ctx: InteractionContext) -> bool:
-    if await RolePlayPermission.cf_edit.check_permissions(ctx.author):
+    if await RolePlayPermission.cf_edit.check_permissions(ctx.author):  # granted by default
         return True
 
     cf = await CaseFileModel.get_by_id(ctx.kwargs.get("id", 0))
@@ -47,6 +48,17 @@ async def rpp_cf_edit_check(ctx: InteractionContext) -> bool:
         return False
 
     return cf.author == ctx.author.id
+
+
+async def rpp_cf_change_status_check(ctx: InteractionContext) -> bool:
+    if await rpp_cf_edit_check(ctx):  # granted by default or author
+        return True
+
+    cf = await CaseFileModel.get_by_id(ctx.kwargs.get("id", 0))
+    if cf is None:
+        return False
+
+    return cf.judge == ctx.author.id
 
 
 class CaseFile(Extension):
@@ -242,6 +254,30 @@ class CaseFile(Extension):
     )
     @check(rpp_cf_edit_check)  # type: ignore
     async def cf_edit(self, ctx: InteractionContext, id: int):  # noqa A002
+        await ctx.send(tg.coming_soon)
+
+    @cf_about.subcommand(
+        sub_cmd_name="change_status",
+        sub_cmd_description="Change the status of a *Case File*",
+        options=[
+            SlashCommandOption(
+                name="id",
+                type=OptionTypes.INTEGER,
+                description="The ID from the *Case file*",
+                required=True,
+                min_value=1,
+            ),
+            SlashCommandOption(
+                name="status",
+                type=OptionTypes.INTEGER,
+                description="The new status the *Case File* should have",
+                required=True,
+                choices=[SlashCommandChoice(name, code) for code, name in _CASE_STATUS.items()],
+            ),
+        ],
+    )
+    @check(rpp_cf_edit_check)  # type: ignore
+    async def cf_change_status(self, ctx: InteractionContext, id: int, status: int):  # noqa A002
         await ctx.send(tg.coming_soon)
 
     @staticmethod
