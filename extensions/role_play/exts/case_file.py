@@ -19,6 +19,7 @@ from naff import (
     ActionRow,
     Button,
     ButtonStyles,
+    check,
 )
 from ..colors import Colors
 from ..db import CaseFileModel
@@ -35,6 +36,17 @@ _CASE_STATUS: dict[int, str] = {
     1: "active",
     2: "closed",
 }
+
+
+async def rpp_cf_edit_check(ctx: InteractionContext) -> bool:
+    if await RolePlayPermission.cf_edit.check_permissions(ctx.author):
+        return True
+
+    cf = await CaseFileModel.get_by_id(ctx.kwargs.get("id", 0))
+    if cf is None:
+        return False
+
+    return cf.author == ctx.author.id
 
 
 class CaseFile(Extension):
@@ -214,6 +226,23 @@ class CaseFile(Extension):
             components = [components]
 
         await c_ctx.edit(msg, embeds=[embed], components=components)
+
+    @cf_about.subcommand(
+        sub_cmd_name="edit",
+        sub_cmd_description="Edit a *Case File*",
+        options=[
+            SlashCommandOption(
+                name="id",
+                type=OptionTypes.INTEGER,
+                description="The ID from the *Case file*",
+                required=True,
+                min_value=1,
+            )
+        ],
+    )
+    @check(rpp_cf_edit_check)  # type: ignore
+    async def cf_edit(self, ctx: InteractionContext, id: int):  # noqa A002
+        await ctx.send(tg.coming_soon)
 
     @staticmethod
     def get_case_embed(title: str, case: CaseFileModel) -> Embed:
