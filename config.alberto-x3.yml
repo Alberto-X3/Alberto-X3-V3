@@ -13,6 +13,7 @@ language:
   fallback: EN
   available:
     - EN
+    - DE
 
 extensions:
   folder: "extensions"
@@ -86,3 +87,9 @@ default_permission_overrides:
     r_config_write: administrator
     r_list_members: supporter
     r_roles_clone: administrator
+
+  role_play:
+    cf_view: public
+    cf_create: public
+    cf_edit: moderator
+    cf_delete: administrator

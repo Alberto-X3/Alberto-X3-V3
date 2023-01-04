@@ -6,6 +6,7 @@ access_granted: Access granted!
 enabled: ":white_checkmark: Enabled"
 disabled: ":x: Disabled"
 error: ":x: Error"
+coming_soon: "coming soon:tm:..."
 executed_by: Executed by {user} ({id})
 no_reason: No reason
 not_found:

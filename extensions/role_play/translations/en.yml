@@ -1,0 +1,89 @@
+permissions:
+  cf_view: view case files
+  cf_create: create case files
+  cf_edit: edit case files
+  cf_delete: delete case files
+
+cf:
+  about:
+    title: "Case file"
+    description: "
+      *Case file* is a system within AlbertoX3 that allows you to
+      hold court hearings and talk things out in role-playing games.
+
+      *Please do not take it too seriously*
+      "
+    statistics:
+      title: "Statistics"
+      description: "
+        Total Case Files: {case_files}
+
+        Total Participants: {participants}
+
+        Last Activity: <t:{last_edited}:R>
+        *(use {latest_link} to get more information)*
+        "
+  title: "Case file #{id}"
+  last_recent_title: "Last recent updated Case File: #{id}"
+  description: "
+    Status: **{status}**
+
+    Created: <t:{created}:f>
+
+    Last Edited: <t:{last_edited}:f>
+
+    Author: <@{author}> (`{author}`)
+    "
+  case:
+    judge:
+      name: "Judge"
+      value: "<@{judge}> (`{judge}`)"
+    lay_judge:
+      name: "Lay Judge"
+      value:
+        zero: "**/**"
+        one: "<@{lay_judge}> (`{lay_judge}`)"
+    complainant:
+      name: "Complainant"
+      value: "<@{complainant}> (`{complainant}`)"
+    complainant_lawyer:
+      name: "Lawyer (Complainant)"
+      value:
+        zero: "**/**"
+        one: "<@{complainant_lawyer}> (`{complainant_lawyer}`)"
+    defendant:
+      name: "Defendant"
+      value: "<@{defendant}> (`{defendant}`)"
+    defendant_lawyer:
+      name: "Lawyer (Defendant)"
+      value:
+        zero: "**/**"
+        one: "<@{defendant_lawyer}> (`{defendant_lawyer}`)"
+    witness:
+      name: "Witness"
+      value:
+        zero: "**/**"
+        one: "<@{witness}> (`{witness}`)"
+    expert:
+      name: "Expert"
+      value:
+        zero: "**/**"
+        one: "<@{expert}> (`{expert}`)"
+    accusation:
+      name: "Accusation"
+      value: "{accusation}"
+  status:
+    open: "Open 🔓"
+    active: "Active ⚖"
+    closed: "Closed 🔒"
+  not_found:
+    by_id:
+      title: "Case file #{id} not found"
+      description: "Couldn't find any record of the *Case file* #{id}"
+  modal:
+    title: "Case File"
+    accusation: "Accusation"
+    placeholder: "Write your accusation here..."
+  buttons:
+    looks_okay: "Looks okay"
+    cancel: "Cancel"
