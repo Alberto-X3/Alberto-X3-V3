@@ -14,8 +14,8 @@ __all__ = (
 )
 
 
-from aioredis import Redis
-from asyncio import Event
+from aioredis.client import Redis
+from asyncio.locks import Event
 from contextlib import asynccontextmanager
 from contextvars import ContextVar
 from datetime import datetime, timezone
@@ -28,13 +28,13 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy.orm.decl_api import DeclarativeMeta, registry as sa_registry
 from sqlalchemy.sql.base import Executable
 from sqlalchemy.sql.dml import Delete
-from sqlalchemy.sql.expression import exists as sa_exists, delete as sa_delete
+from sqlalchemy.sql.expression import delete as sa_delete, exists as sa_exists
 from sqlalchemy.sql.functions import count
 from sqlalchemy.sql.schema import MetaData, Table
 from sqlalchemy.sql.selectable import Exists, Select
 from sqlalchemy.sql.sqltypes import DateTime
 from sqlalchemy.sql.type_api import TypeDecorator
-from typing import AsyncIterable, ParamSpec, TypeVar, Optional, Any, NoReturn, Awaitable, Callable
+from typing import Any, AsyncIterable, Awaitable, Callable, NoReturn, Optional, ParamSpec, TypeVar
 from .environment import (
     DB_DRIVER,
     DB_HOST,
