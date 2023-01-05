@@ -1,7 +1,7 @@
 __all__ = ("Colors",)
 
 
-from AlbertoX3 import AllColors
+from AlbertoX3.colors import AllColors
 
 
 class Colors(AllColors):
