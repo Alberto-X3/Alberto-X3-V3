@@ -16,15 +16,19 @@ __all__ = (
 import re
 import sys
 from datetime import datetime, timezone
-from naff import Context, User, Member, Snowflake_Type, Guild, Absent
+from naff.client.const import Absent
+from naff.models.discord.guild import Guild
+from naff.models.discord.snowflake import Snowflake_Type
+from naff.models.discord.user import Member, User
+from naff.models.naff.context import Context
 from pathlib import Path
 from pprint import pformat
-from typing import TypeVar, Optional
-from .constants import MISSING, LIB_PATH, StyleConfig, Config
+from typing import Optional, TypeVar
+from .constants import Config, LIB_PATH, MISSING, StyleConfig
 from .errors import DeveloperArgumentError
-from .misc import PrimitiveExtension, EXTENSION_FEATURES
+from .misc import EXTENSION_FEATURES, PrimitiveExtension
 from .permission import BasePermission
-from ._utils_essentials import get_logger, get_bool
+from ._utils_essentials import get_bool, get_logger
 
 
 T = TypeVar("T")
