@@ -41,7 +41,7 @@ NOTE:
         https://bit.ly/AlbertoX3-BotAPI-Incompatible
 
 
-LAST-EDITED: 2023.01.02  # YYYY.MM.DD
+LAST-EDITED: 2023.01.05  # YYYY.MM.DD
 API-VERSION: 1  # current protocol-version  # won't be send in requests atm
 
 Copyright 2022-present (c) AlbertUnruh - Alberto-X3
@@ -66,8 +66,9 @@ try:
 except ModuleNotFoundError:
     from json import loads, dumps
 try:
-    from naff import Client, Message
+    from naff.client import Client
     from naff.client.mixins.send import SendMixin
+    from naff.models.discord.message import Message
 except ModuleNotFoundError:
     # maybe other libraries like Discord.py are installed -> manual type-hinting
     class Attachment:
