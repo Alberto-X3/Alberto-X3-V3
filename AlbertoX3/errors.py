@@ -12,7 +12,7 @@ __all__ = (
 )
 
 
-from naff import Absent, MISSING
+from naff.client.const import Absent, MISSING
 
 
 class AlbertoX3Error(Exception):
