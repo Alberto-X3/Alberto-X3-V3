@@ -7,7 +7,8 @@ __all__ = (
 
 import sys
 from aenum import NoAliasEnum
-from sqlalchemy import Column, String, Text
+from sqlalchemy.sql.schema import Column
+from sqlalchemy.sql.sqltypes import String, Text
 from .aio import LockDeco
 from .database import Base, db, redis
 from .environment import CACHE_TTL
