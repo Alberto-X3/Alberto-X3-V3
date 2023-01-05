@@ -1,17 +1,20 @@
 __all__ = ("Sudo",)
 
 
-from AlbertoX3 import get_logger, Extension, t, TranslationNamespace, OWNER_ID, permission_override, Config, redis
+from AlbertoX3.constants import Config
+from AlbertoX3.database import redis
+from AlbertoX3.environment import OWNER_ID
+from AlbertoX3.naff_wrapper import Extension
+from AlbertoX3.permission import permission_override
+from AlbertoX3.translations import TranslationNamespace, t
+from AlbertoX3.utils import get_logger
 from naff.api.events.internal import CommandCompletion
-from naff import (
-    Client,
-    BaseChannel,
-    InteractionContext,
-    SlashCommand,
-    slash_command,
-    check,
-    listen,
-)
+from naff.client.client import Client
+from naff.models.discord.channel import BaseChannel
+from naff.models.naff.application_commands import SlashCommand, slash_command
+from naff.models.naff.command import check
+from naff.models.naff.context import InteractionContext
+from naff.models.naff.listener import listen
 from ..permission import AdministrationPermission
 
 

@@ -5,9 +5,9 @@ __all__ = (
 )
 
 
-from naff import MISSING
+from naff.client.const import MISSING
 from pathlib import Path
-from typing import Callable, Literal, Iterable
+from typing import Callable, Iterable, Literal
 
 
 class FormatStr(str):

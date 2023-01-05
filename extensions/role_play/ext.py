@@ -1,8 +1,9 @@
 __all__ = ("RolePlay",)
 
 
-from AlbertoX3 import get_logger, Extension
-from naff import Client
+from AlbertoX3.naff_wrapper import Extension
+from AlbertoX3.utils import get_logger
+from naff.client.client import Client
 from .exts import CaseFile
 
 

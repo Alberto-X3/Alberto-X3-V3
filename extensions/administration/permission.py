@@ -2,7 +2,8 @@ __all__ = ("AdministrationPermission",)
 
 
 from aenum import auto
-from AlbertoX3 import BasePermission, t
+from AlbertoX3.permission import BasePermission
+from AlbertoX3.translations import t
 
 
 class AdministrationPermission(BasePermission):

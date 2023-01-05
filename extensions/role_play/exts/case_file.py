@@ -1,27 +1,20 @@
 __all__ = ("CaseFile",)
 
 
-from AlbertoX3 import get_logger, Extension, t, TranslationNamespace, db, select
-from naff import (
-    Embed,
-    EmbedField,
-    InteractionContext,
-    slash_command,
-    SlashCommandOption,
-    SlashCommandChoice,
-    OptionTypes,
-    BaseUser,
-    MISSING,
-    ModalContext,
-    Modal,
-    ParagraphText,
-    EMBED_FIELD_VALUE_LENGTH,
-    Client,
-    ActionRow,
-    Button,
-    ButtonStyles,
-    check,
-)
+from AlbertoX3.database import db, select
+from AlbertoX3.naff_wrapper import Extension
+from AlbertoX3.translations import TranslationNamespace, t
+from AlbertoX3.utils import get_logger
+from naff.client.client import Client
+from naff.client.const import EMBED_FIELD_VALUE_LENGTH, MISSING
+from naff.models.discord.components import ActionRow, Button
+from naff.models.discord.embed import Embed, EmbedField
+from naff.models.discord.enums import ButtonStyles
+from naff.models.discord.modal import Modal, ParagraphText
+from naff.models.discord.user import BaseUser
+from naff.models.naff.application_commands import OptionTypes, SlashCommandChoice, SlashCommandOption, slash_command
+from naff.models.naff.command import check
+from naff.models.naff.context import InteractionContext, ModalContext
 from ..colors import Colors
 from ..db import CaseFileModel
 from ..permission import RolePlayPermission

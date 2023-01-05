@@ -4,17 +4,17 @@ __all__ = ("Automation",)
 import orjson
 import re
 from aiohttp.client import ClientSession
-from AlbertoX3 import get_logger, Extension, Config, t, TranslationNamespace
 from importlib.metadata import Distribution, PackageNotFoundError
-from naff import (
-    InteractionContext,
-    Task,
-    TimeTrigger,
-    slash_command,
-    Embed,
-    EmbedFooter,
-    Listener,
-)
+from AlbertoX3.constants import Config
+from AlbertoX3.naff_wrapper import Extension
+from AlbertoX3.translations import TranslationNamespace, t
+from AlbertoX3.utils import get_logger
+from naff.models.discord.embed import EmbedFooter, Embed
+from naff.models.naff.application_commands import slash_command
+from naff.models.naff.context import InteractionContext
+from naff.models.naff.listener import Listener
+from naff.models.naff.tasks.task import Task
+from naff.models.naff.tasks.triggers import TimeTrigger
 from .colors import Colors
 
 

@@ -5,8 +5,8 @@ __all__ = (
 )
 
 
+from typing import Any, ItemsView, Iterator
 from yaml import safe_load
-from typing import Iterator, ItemsView, Any
 from .constants import LIB_PATH
 
 

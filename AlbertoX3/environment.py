@@ -20,7 +20,7 @@ __all__ = (
 )
 
 
-from dotenv import load_dotenv
+from dotenv.main import load_dotenv
 from os import environ, getenv
 from ._utils_essentials import get_bool
 

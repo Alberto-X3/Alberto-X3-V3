@@ -2,30 +2,19 @@ __all__ = ("Permissions",)
 
 
 import asyncio
-from AlbertoX3 import (
-    RoleSettings,
-    get_logger,
-    get_permissions,
-    Extension,
-    t,
-    TranslationNamespace,
-    Config,
-    BasePermissionLevel,
-    BasePermission,
-)
-from naff import (
-    Absent,
-    MISSING,
-    InteractionContext,
-    Role,
-    slash_command,
-    SlashCommandOption,
-    OptionTypes,
-    Converter,
-    Context,
-    Embed,
-    Message,
-)
+from AlbertoX3.constants import Config
+from AlbertoX3.naff_wrapper import Extension
+from AlbertoX3.permission import BasePermission, BasePermissionLevel
+from AlbertoX3.settings import RoleSettings
+from AlbertoX3.translations import TranslationNamespace, t
+from AlbertoX3.utils import get_logger, get_permissions
+from naff.client.const import Absent, MISSING
+from naff.models.discord.embed import Embed
+from naff.models.discord.message import Message
+from naff.models.discord.role import Role
+from naff.models.naff.application_commands import OptionTypes, SlashCommandOption, slash_command
+from naff.models.naff.context import Context, InteractionContext
+from naff.models.naff.protocols import Converter
 from ..colors import Colors
 from ..permission import AdministrationPermission
 

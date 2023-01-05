@@ -5,7 +5,9 @@ from AlbertoX3.constants import MISSING
 from AlbertoX3.database import Base, UTCDatetime, db
 from datetime import datetime
 from naff.client.const import EMBED_FIELD_VALUE_LENGTH
-from sqlalchemy import Column, Integer, BigInteger, Text, func
+from sqlalchemy.sql.functions import func
+from sqlalchemy.sql.schema import Column
+from sqlalchemy.sql.sqltypes import BigInteger, Integer, Text
 
 
 class CaseFileModel(Base):

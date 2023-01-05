@@ -1,13 +1,11 @@
 __all__ = ("Extension",)
 
 
-from naff import (
-    Extension as naff_Extension,
-    BaseCommand as naff_BaseCommand,
-    Listener as naff_Listener,
-    Task as naff_Task,
-)
-from typing import NoReturn, Any, TypeVar, ParamSpec, Callable, Awaitable
+from naff.models.naff.command import BaseCommand as naff_BaseCommand
+from naff.models.naff.extension import Extension as naff_Extension
+from naff.models.naff.listener import Listener as naff_Listener
+from naff.models.naff.tasks.task import Task as naff_Task
+from typing import Any, Awaitable, Callable, NoReturn, ParamSpec, TypeVar
 from .database import db_wrapper
 from .translations import language_wrapper
 
