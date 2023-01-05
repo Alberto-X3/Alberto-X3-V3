@@ -17,7 +17,7 @@ from AlbertUnruhUtils.utils.logger import (
     _LOG_LEVEL_STR,  # noqa (_LOG_LEVEL_STR is not in __all__)
 )
 from logging import Logger
-from typing import Optional, TypeVar, Callable, ParamSpec
+from typing import Callable, Optional, ParamSpec, TypeVar
 from .errors import UnrecognisedBooleanError
 
 
