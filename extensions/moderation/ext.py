@@ -1,10 +1,13 @@
 __all__ = ("Moderation",)
 
 
-from AlbertoX3 import get_logger, Extension
 from datetime import datetime, timezone
 from datetimeparser import parse
-from naff import InteractionContext, Member, OptionTypes, SlashCommandOption, slash_command
+from AlbertoX3.naff_wrapper import Extension
+from AlbertoX3.utils import get_logger
+from naff.models.discord.user import Member
+from naff.models.naff.application_commands import OptionTypes, SlashCommandOption, slash_command
+from naff.models.naff.context import InteractionContext
 from .db import BanModel, UnbanModel, KickModel, MuteModel, UnmuteModel, DeleteModel
 
 
