@@ -8,19 +8,12 @@ __all__ = (
     "run_as_task",
 )
 
-from asyncio import (
-    AbstractEventLoop,
-    Event,
-    Lock,
-    Semaphore,
-    create_task,
-    gather,
-    get_event_loop,
-    get_running_loop,
-)
+from asyncio.events import AbstractEventLoop, get_event_loop, get_running_loop
+from asyncio.locks import Event, Lock, Semaphore
+from asyncio.tasks import create_task, gather
 from functools import partial, update_wrapper, wraps
 from threading import Thread as t_Thread
-from typing import TypeVar, ParamSpec, Literal, Callable, Awaitable, NoReturn
+from typing import Awaitable, Callable, Literal, NoReturn, ParamSpec, TypeVar
 from .constants import MISSING
 from .errors import GatherAnyError
 
