@@ -7,9 +7,10 @@ __all__ = (
 
 
 from functools import partial
-from naff import Member, Missing, Absent, User
+from naff.client.const import Absent, Missing
+from naff.models.discord.user import Member, User
 from pathlib import Path
-from typing import TYPE_CHECKING, Callable, Awaitable, NoReturn
+from typing import Awaitable, Callable, NoReturn, TYPE_CHECKING
 from yaml import safe_load
 from .contributors import Contributor
 from .errors import InvalidPermissionLevelError
