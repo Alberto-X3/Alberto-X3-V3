@@ -11,9 +11,9 @@ __all__ = (
 
 from contextvars import ContextVar
 from functools import wraps
-from naff import Absent, MISSING, Context
+from naff import Absent, Context, MISSING
 from pathlib import Path
-from typing import NoReturn, Callable, Awaitable, TypeVar, ParamSpec
+from typing import Awaitable, Callable, NoReturn, ParamSpec, TypeVar
 from yaml import safe_load
 from .constants import Config
 from .errors import UnsupportedLanguageError, UnsupportedTranslationTypeError
