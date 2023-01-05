@@ -1,16 +1,16 @@
 __all__ = ("Roles",)
 
 
-from AlbertoX3 import RoleSettings, get_logger, Extension, t, TranslationNamespace, Config
-from naff import (
-    Permissions,
-    Role,
-    Embed,
-    InteractionContext,
-    SlashCommandOption,
-    OptionTypes,
-    slash_command,
-)
+from AlbertoX3.constants import Config
+from AlbertoX3.naff_wrapper import Extension
+from AlbertoX3.settings import RoleSettings
+from AlbertoX3.translations import TranslationNamespace, t
+from AlbertoX3.utils import get_logger
+from naff.models.discord.embed import Embed
+from naff.models.discord.enums import Permissions
+from naff.models.discord.role import Role
+from naff.models.naff.application_commands import OptionTypes, SlashCommandOption, slash_command
+from naff.models.naff.context import InteractionContext
 from ..colors import Colors
 from ..permission import AdministrationPermission
 
