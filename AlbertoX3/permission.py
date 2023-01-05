@@ -12,9 +12,12 @@ import sys
 from aenum import Enum
 from collections import namedtuple
 from contextvars import ContextVar
-from naff import Context, BaseUser, check
-from sqlalchemy import Column, Integer, String
-from typing import Callable, Awaitable, NoReturn
+from naff.models.discord.user import BaseUser
+from naff.models.naff.command import check
+from naff.models.naff.context import Context
+from sqlalchemy.sql.schema import Column
+from sqlalchemy.sql.sqltypes import Integer, String
+from typing import Awaitable, Callable, NoReturn
 from .database import Base, db, redis
 from .environment import CACHE_TTL
 from .errors import UnrecognisedPermissionLevelError
