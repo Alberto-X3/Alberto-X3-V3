@@ -38,6 +38,9 @@ roles:
   team:
     name: Team
 
+  maintenance:
+    name: Maintenance
+
 permission_levels:
   administrator:
     name: Administrator
@@ -87,6 +90,9 @@ default_permission_overrides:
     r_config_write: administrator
     r_list_members: supporter
     r_roles_clone: administrator
+
+  maintenance:
+    manage: administrator
 
   role_play:
     cf_view: public
