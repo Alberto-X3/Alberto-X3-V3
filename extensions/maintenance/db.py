@@ -4,7 +4,7 @@ __all__ = (
 )
 
 
-from AlbertoX3.database import Base, db
+from AlbertoX3.database import Base, db, filter_by
 from naff.client.client import Client
 from naff.models.discord.guild import Guild
 from naff.models.discord.role import Role
@@ -15,7 +15,7 @@ from sqlalchemy.sql.sqltypes import BigInteger
 class MaintenanceUsersModel(Base):
     __tablename__ = "maintenance_users"
 
-    user: Column | int = Column(BigInteger, primary_key=True, unique=True, nullable=False)
+    user: Column | int = Column(BigInteger, primary_key=True, unique=True, autoincrement=False, nullable=False)
     roles: Column | int = Column(BigInteger, nullable=False)
     guild: Column | int = Column(BigInteger, nullable=False)
 
@@ -37,13 +37,13 @@ class MaintenanceUsersModel(Base):
 
     @staticmethod
     async def clear() -> None:
-        await db.delete(MaintenanceUsersModel)
+        await clear(MaintenanceUsersModel)
 
 
 class MaintenanceRolesModel(Base):
     __tablename__ = "maintenance_roles"
 
-    id: Column | int = Column(BigInteger, primary_key=True, unique=True, nullable=False)
+    id: Column | int = Column(BigInteger, primary_key=True, unique=True, autoincrement=False, nullable=False)
     role: Column | int = Column(BigInteger, nullable=False)
 
     @staticmethod
@@ -56,4 +56,9 @@ class MaintenanceRolesModel(Base):
 
     @staticmethod
     async def clear() -> None:
-        await db.delete(MaintenanceRolesModel)
+        await clear(MaintenanceRolesModel)
+
+
+async def clear(model: type[Base]) -> None:
+    async for row in await db.stream(filter_by(model)):
+        await db.delete(row)

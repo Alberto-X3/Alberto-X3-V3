@@ -1,2 +1,37 @@
 permissions:
   manage: enter and exit maintenance
+
+enter:
+  checklist:
+    collecting_roles: "
+    🟡 Collecting roles...
+
+    🔴 Remove roles
+    "
+    removing_roles: "
+    🟢 Roles collected
+
+    🟡 Removing roles...
+    "
+    done: "
+    🟢 Roles granted
+
+    🟢 Roles removed
+    "
+exit:
+  checklist:
+    granting_roles: "
+    🟡 Granting roles...
+
+    🔴 Clear database
+    "
+    clearing_database: "
+    🟢 Roles granted
+
+    🟡 Clearing database...
+    "
+    done: "
+    🟢 Roles granted
+
+    🟢 Database cleared
+    "
