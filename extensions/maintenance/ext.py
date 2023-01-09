@@ -4,8 +4,7 @@ __all__ = ("Maintenance",)
 from AlbertoX3.naff_wrapper import Extension
 from AlbertoX3.settings import RoleSettings
 from AlbertoX3.translations import TranslationNamespace, t
-from AlbertoX3.utils import get_logger
-from naff.client.errors import Forbidden
+from AlbertoX3.utils import get_logger, role_is_manageable
 from naff.models.discord.guild import Guild
 from naff.models.discord.user import Member
 from naff.models.naff.application_commands import slash_command
@@ -43,13 +42,9 @@ class Maintenance(Extension):
         for user, roles in users.items():
             await MaintenanceUsersModel.add(user=user.id, roles=roles, guild=guild.id)
 
-            for role in user.roles:
-                # ToDo: make it more performant (use `user.remove_roles()`)
-                try:
-                    await user.remove_role(role=role, reason="Maintenance starts!")
-                except Forbidden:
-                    logger.error(f"Unable to remove role {role.name} from {user.tag} ({user.id})")
-            await user.add_role(role=maintenance_role, reason="Maintenance starts!")
+            new_roles = {r.id for r in user.roles if not role_is_manageable(r)}
+            new_roles.add(maintenance_role)
+            await user.edit(roles=new_roles, reason="Maintenance starts!")
 
         # done
         await msg.edit(content=t.enter.checklist.done)
@@ -68,13 +63,11 @@ class Maintenance(Extension):
             if (m_member := await MaintenanceUsersModel.get(member.id)) is None:
                 continue
 
-            for role in await m_member.get_discord_roles(self.bot):
-                # ToDo: make it more performant (use `user.add_roles()`)
-                try:
-                    await member.add_role(role=role, reason="Maintenance is over!")
-                except Forbidden:
-                    logger.error(f"Unable to add role {role.name} to {member.tag} ({member.id})")
-                await member.remove_role(role=maintenance_role, reason="Maintenance is over!")
+            new_roles = {
+                r.id for r in await m_member.get_discord_roles(self.bot) if role_is_manageable(r) or r in member.roles
+            }
+            new_roles.discard(maintenance_role)
+            await member.edit(roles=new_roles, reason="Maintenance is over!")
 
         # clear database
         await msg.edit(content=t.exit.checklist.clearing_database)

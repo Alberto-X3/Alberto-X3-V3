@@ -10,6 +10,7 @@ __all__ = (
     "get_language",
     "get_member",
     "get_user",
+    "role_is_manageable",
 )
 
 
@@ -18,6 +19,7 @@ import sys
 from datetime import datetime, timezone
 from naff.client.const import Absent
 from naff.models.discord.guild import Guild
+from naff.models.discord.role import Role
 from naff.models.discord.snowflake import Snowflake_Type
 from naff.models.discord.user import Member, User
 from naff.models.naff.context import Context
@@ -354,3 +356,10 @@ async def get_user(ctx: Context, raw: User | Member | Snowflake_Type) -> Optiona
 
         case _:
             return None
+
+
+def role_is_manageable(role: Role) -> bool:
+    if not role.guild.me.guild_permissions.MANAGE_ROLES:
+        return False
+
+    return role.is_assignable
