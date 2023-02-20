@@ -12,4 +12,4 @@ orjson~=3.8.5
 git+https://github.com/aridevelopment-de/datetimeparser.git@dev#egg=python-datetimeparser
 python-dotenv~=0.21.1
 PyYAML~=6.0
-SQLAlchemy~=1.4.46
+SQLAlchemy~=2.0.4
