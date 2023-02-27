@@ -10,6 +10,6 @@ git+https://github.com/NAFTeam/NAFF.git@dev#egg=NAFF[voice,speedup,jurigged]
 orjson~=3.8.5
 #python-datetimeparser==0.4.rc  # fix version since 0.5(rc) might be completely breaking
 git+https://github.com/aridevelopment-de/datetimeparser.git@dev#egg=python-datetimeparser
-python-dotenv~=0.21.1
+python-dotenv~=1.0.0
 PyYAML~=6.0
 SQLAlchemy~=1.4.46
