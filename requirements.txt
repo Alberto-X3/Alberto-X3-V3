@@ -7,7 +7,7 @@ attrs~=22.2.0
 cryptography~=39.0.0
 #NAFF[voice,speedup]~=1.12.0
 git+https://github.com/NAFTeam/NAFF.git@dev#egg=NAFF[voice,speedup,jurigged]
-orjson~=3.8.5
+orjson~=3.8.7
 #python-datetimeparser==0.4.rc  # fix version since 0.5(rc) might be completely breaking
 git+https://github.com/aridevelopment-de/datetimeparser.git@dev#egg=python-datetimeparser
 python-dotenv~=0.21.1
