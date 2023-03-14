@@ -47,7 +47,6 @@ class Automation(Extension):
         else:
             pip_session = PipSession()
             async with ClientSession() as http_session:
-
                 embed.color = Colors.automation
                 requirements = []
                 for req in parse_requirements("requirements.txt", pip_session):
